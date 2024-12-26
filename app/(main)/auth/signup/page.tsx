@@ -4,12 +4,10 @@ import Image from "next/image";
 
 export default function SignUpPage() {
   return (
-    <div className="min-h-screen flex overflow-hidden">
-      {/* Left half - white background */}
-      <div className="w-1/2 bg-white rounded-tr-[50px] rounded-br-[50px]"></div>
+    <div className="min-h-screen flex overflow-hidden relative">
+      <div className="w-1/2 bg-white rounded-tr-[50px] rounded-br-[50px] relative z-10"></div>
 
-      {/* Right half - blue background with image */}
-      <div className="w-1/2" style={{ background: "#A2B0FF" }}>
+      <div className="w-full h-full absolute" style={{ background: "#A2B0FF" }}>
         <div className="flex justify-end h-screen">
           <Image
             src="/image.png"
