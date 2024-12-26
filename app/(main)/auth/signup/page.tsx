@@ -16,10 +16,6 @@ export default function SignUpPage() {
             height={1000}
             className="object-contain h-full"
             priority
-            style={{
-              mixBlendMode: "multiply",
-              filter: "brightness(1.1)",
-            }}
           />
         </div>
       </div>
