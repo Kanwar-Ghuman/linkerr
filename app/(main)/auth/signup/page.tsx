@@ -56,107 +56,120 @@ export default function SignUpPage() {
             className="object-contain"
             priority
           />
-          <div className="mt-16 pl-20">
-            <h1 className="text-4xl font-bold" style={{ color: "#000270" }}>
+          <div className="pl-[220px]">
+            {" "}
+            {/* Adjusted padding for vertical alignment */}
+            <h1
+              className="text-4xl font-bold mt-16"
+              style={{ color: "#000270" }}
+            >
               Create Account
             </h1>
-          </div>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Full Name"
-                        {...field}
-                        className="w-[400px] h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="Enter your email"
-                        {...field}
-                        className="w-[400px] h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        {...field}
-                        className="w-[400px] h-[50px]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex items-center gap-2">
-                <Checkbox id="terms" />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  I agree with Terms and Policy
-                </label>
-              </div>
-
-              <div className="space-y-4 mt-6">
-                <Button
-                  type="submit"
-                  className="w-full bg-[#5771FF] hover:bg-[#5771FF]/90"
-                >
-                  Sign Up
-                </Button>
-
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full"
-                  onClick={() => console.log("Google sign in")}
-                >
-                  <Image
-                    src="/google.png"
-                    alt="Google"
-                    width={20}
-                    height={20}
-                    className="mr-2"
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8 mt-8"
+              >
+                {/* Form fields */}
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Full Name"
+                            {...field}
+                            className="w-[400px] h-[50px]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                  Sign in with Google
-                </Button>
-              </div>
-            </form>
-          </Form>
-          <div className="text-center mt-4">
-            <span className="text-gray-600">Already have an account? </span>
-            <a
-              href="/login"
-              className="text-[#5771FF] font-semibold hover:underline"
-            >
-              Log in
-            </a>
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            {...field}
+                            className="w-[400px] h-[50px]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            {...field}
+                            className="w-[400px] h-[50px]"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                {/* Checkbox */}
+                <div className="flex items-center gap-2">
+                  <Checkbox id="terms" />
+                  <label htmlFor="terms" className="text-sm font-medium">
+                    I agree with Terms and Policy
+                  </label>
+                </div>
+
+                {/* Buttons */}
+                <div className="flex flex-col space-y-4">
+                  <Button
+                    type="submit"
+                    className="w-[400px] h-[50px] bg-[#5771FF]"
+                  >
+                    Sign Up
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-[400px] h-[50px]"
+                  >
+                    <Image
+                      src="/google.png"
+                      alt="Google"
+                      width={20}
+                      height={20}
+                      className="mr-2"
+                    />
+                    Sign in with Google
+                  </Button>
+                </div>
+
+                <div className="text-center mt-4 -ml-60">
+                  {" "}
+                  <span className="text-gray-600">
+                    Already have an account?{" "}
+                  </span>
+                  <a
+                    href="/login"
+                    className="text-[#5771FF] font-semibold hover:underline "
+                  >
+                    Log in
+                  </a>
+                </div>
+              </form>
+            </Form>
           </div>
         </div>
       </div>
