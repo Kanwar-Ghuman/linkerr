@@ -1,10 +1,10 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { User, Mail, Lock } from "lucide-react";
+import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +30,8 @@ const formSchema = z.object({
 });
 
 export default function SignUpPage() {
-  // Add form initialization
+  const [showPassword, setShowPassword] = useState(false);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,7 +41,6 @@ export default function SignUpPage() {
     },
   });
 
-  // Add onSubmit handler
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
   }
@@ -123,11 +123,24 @@ export default function SignUpPage() {
                           <div className="relative">
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                             <Input
-                              type="password"
+                              type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
                               {...field}
-                              className="w-[400px] h-[50px] pl-10"
+                              className="w-[400px] h-[50px] pl-10 pr-12" // Increased right padding
                             />
+                            <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                              <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="text-gray-400 hover:text-gray-600 focus:outline-none"
+                              >
+                                {showPassword ? (
+                                  <EyeOff className="h-5 w-5" />
+                                ) : (
+                                  <Eye className="h-5 w-5" />
+                                )}
+                              </button>
+                            </div>
                           </div>
                         </FormControl>
                         <FormMessage />
