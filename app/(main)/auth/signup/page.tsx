@@ -4,6 +4,7 @@ import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { User, Mail, Lock } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -68,21 +69,26 @@ export default function SignUpPage() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-8 mt-8"
+                className="space-y-12 mt-8"
               >
                 {/* Form fields */}
-                <div className="space-y-4">
+                <div className="space-y-12">
+                  {" "}
+                  {/* Increased from space-y-8 to space-y-12 */}
                   <FormField
                     control={form.control}
                     name="username"
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            placeholder="Full Name"
-                            {...field}
-                            className="w-[400px] h-[50px]"
-                          />
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            <Input
+                              placeholder="Full Name"
+                              {...field}
+                              className="w-[400px] h-[50px] pl-10"
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -94,12 +100,15 @@ export default function SignUpPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            type="email"
-                            placeholder="Enter your email"
-                            {...field}
-                            className="w-[400px] h-[50px]"
-                          />
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            <Input
+                              type="email"
+                              placeholder="Enter your email"
+                              {...field}
+                              className="w-[400px] h-[50px] pl-10"
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -111,12 +120,15 @@ export default function SignUpPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="Enter your password"
-                            {...field}
-                            className="w-[400px] h-[50px]"
-                          />
+                          <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                            <Input
+                              type="password"
+                              placeholder="Enter your password"
+                              {...field}
+                              className="w-[400px] h-[50px] pl-10"
+                            />
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -133,7 +145,9 @@ export default function SignUpPage() {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex flex-col space-y-4">
+                <div className="flex flex-col space-y-8">
+                  {" "}
+                  {/* Increased from space-y-4 to space-y-8 */}
                   <Button
                     type="submit"
                     className="w-[400px] h-[50px] bg-[#5771FF]"
