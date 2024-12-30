@@ -62,7 +62,7 @@ export default function SignUpPage() {
             {" "}
             {/* Adjusted padding for vertical alignment */}
             <h1
-              className="text-4xl font-bold mt-16"
+              className="text-3xl font-medium mt-16"
               style={{ color: "#000270" }}
             >
               Create Account
@@ -154,7 +154,8 @@ export default function SignUpPage() {
                 <div className="flex items-center gap-2 mt-4">
                   <Checkbox id="terms" />
                   <label htmlFor="terms" className="text-sm font-medium">
-                    I agree with Terms and Policy
+                    I agree with <span className="text-[#5771FF]">Terms</span>{" "}
+                    and <span className="text-[#5771FF]">Policy</span>
                   </label>
                 </div>
 
