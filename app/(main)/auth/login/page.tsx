@@ -61,7 +61,7 @@ export default function SignUpPage() {
             {" "}
             {/* Adjusted padding for vertical alignment */}
             <h1
-              className="text-4xl font-bold mt-16"
+              className="text-3xl font-medium mt-16"
               style={{ color: "#000270" }}
             >
               Login
