@@ -77,25 +77,6 @@ export default function SignUpPage() {
                   {/* Increased from space-y-8 to space-y-12 */}
                   <FormField
                     control={form.control}
-                    name="username"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                            <Input
-                              placeholder="Full Name"
-                              {...field}
-                              className="w-[400px] h-[50px] pl-10"
-                            />
-                          </div>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem>
@@ -104,7 +85,7 @@ export default function SignUpPage() {
                             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                             <Input
                               type="email"
-                              placeholder="Enter your email"
+                              placeholder="Email Address"
                               {...field}
                               className="w-[400px] h-[50px] pl-10"
                             />
@@ -124,7 +105,7 @@ export default function SignUpPage() {
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                             <Input
                               type={showPassword ? "text" : "password"}
-                              placeholder="Enter your password"
+                              placeholder="Password "
                               {...field}
                               className="w-[400px] h-[50px] pl-10 pr-12"
                             />
@@ -155,7 +136,7 @@ export default function SignUpPage() {
                     type="submit"
                     className="w-[400px] h-[50px] bg-[#5771FF]"
                   >
-                    Sign Up
+                    Login
                   </Button>
                   <Button
                     type="button"
@@ -169,8 +150,19 @@ export default function SignUpPage() {
                       height={20}
                       className="mr-2"
                     />
-                    Sign in with Google
+                    Sign Up with Google
                   </Button>
+                </div>
+
+                <div className="text-center mt-4 -ml-60">
+                  {" "}
+                  <span className="text-gray-600">Don't have an account? </span>
+                  <a
+                    href="/login"
+                    className="text-[#5771FF] font-semibold hover:underline "
+                  >
+                    Sign up
+                  </a>
                 </div>
               </form>
             </Form>
