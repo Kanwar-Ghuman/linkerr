@@ -158,7 +158,7 @@ export default function SignUpPage() {
                   {" "}
                   <span className="text-gray-600">Don't have an account? </span>
                   <a
-                    href="/login"
+                    href="signup"
                     className="text-[#5771FF] font-semibold hover:underline "
                   >
                     Sign up

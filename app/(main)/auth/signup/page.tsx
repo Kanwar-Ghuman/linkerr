@@ -187,7 +187,7 @@ export default function SignUpPage() {
                     Already have an account?{" "}
                   </span>
                   <a
-                    href="/login"
+                    href="login"
                     className="text-[#5771FF] font-semibold hover:underline "
                   >
                     Log in
