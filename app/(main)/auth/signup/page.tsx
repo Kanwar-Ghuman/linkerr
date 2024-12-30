@@ -126,7 +126,7 @@ export default function SignUpPage() {
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
                               {...field}
-                              className="w-[400px] h-[50px] pl-10 pr-12" // Increased right padding
+                              className="w-[400px] h-[50px] pl-10 pr-12"
                             />
                             <div className="absolute inset-y-0 right-0 flex items-center pr-3">
                               <button
@@ -149,8 +149,8 @@ export default function SignUpPage() {
                   />
                 </div>
 
-                {/* Checkbox */}
-                <div className="flex items-center gap-2">
+                {/* Terms and Policy Checkbox */}
+                <div className="flex items-center gap-2 mt-4">
                   <Checkbox id="terms" />
                   <label htmlFor="terms" className="text-sm font-medium">
                     I agree with Terms and Policy
@@ -158,9 +158,7 @@ export default function SignUpPage() {
                 </div>
 
                 {/* Buttons */}
-                <div className="flex flex-col space-y-8">
-                  {" "}
-                  {/* Increased from space-y-4 to space-y-8 */}
+                <div className="flex flex-col space-y-8 mt-4">
                   <Button
                     type="submit"
                     className="w-[400px] h-[50px] bg-[#5771FF]"
