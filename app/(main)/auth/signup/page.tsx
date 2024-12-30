@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -120,7 +121,7 @@ export default function SignUpPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormControl>
-                          <div className="relative">
+                          <div className="relative w-[400px]">
                             <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                             <Input
                               type={showPassword ? "text" : "password"}
@@ -187,7 +188,7 @@ export default function SignUpPage() {
                     Already have an account?{" "}
                   </span>
                   <a
-                    href="/login"
+                    href="login"
                     className="text-[#5771FF] font-semibold hover:underline "
                   >
                     Log in
