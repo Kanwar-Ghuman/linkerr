@@ -1,75 +1,74 @@
-import { getUserByEmail } from "@/actions/user";
+import { getUserById, getUserByEmail } from "@/actions/user";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import NextAuth from "next-auth";
 import bcryptjs from "bcryptjs";
-import type { NextAuthConfig } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import ResendProvider from "next-auth/providers/resend";
-
-import { env } from "@/env.mjs";
-import { resend } from "@/config/email";
-import { siteConfig } from "@/config/site";
 import { signInWithPasswordSchema } from "@/validations/auth";
+import { prisma } from "@/config/db";
 
-import { MagicLinkEmail } from "@/components/emails/magic-link-email";
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth({
+  debug: process.env.NODE_ENV === "development",
+  pages: {
+    signIn: "/signin",
+    signOut: "/signout",
+  },
+  secret: process.env.AUTH_SECRET,
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60,
+    updateAge: 24 * 60 * 60,
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.role = user.role;
+      return token;
+    },
+    async session({ session, token }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+      if (token.role && session.user) {
+        session.user.role = token.role as "USER" | "ADMIN";
+      }
+      return session;
+    },
+    async signIn({ user, account }) {
+      if (!user.id) return false;
+      if (account?.provider === "google") return true;
 
-export default {
+      const existingUser = await getUserById({ id: user.id });
+      return existingUser ? true : false;
+    },
+  },
+  adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
-      clientId: env.GOOGLE_ID,
-      clientSecret: env.GOOGLE_SECRET,
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
     }),
-
     CredentialsProvider({
       async authorize(rawCredentials) {
         const validatedCredentials =
           signInWithPasswordSchema.safeParse(rawCredentials);
+        if (!validatedCredentials.success) return null;
 
-        if (validatedCredentials.success) {
-          const user = await getUserByEmail({
-            email: validatedCredentials.data.email,
-          });
-          if (!user || !user.passwordHash) return null;
+        const { email, password } = validatedCredentials.data;
+        const user = await getUserByEmail({ email });
+        if (!user?.passwordHash) return null;
 
-          const passwordIsValid = await bcryptjs.compare(
-            validatedCredentials.data.password,
-            user.passwordHash
-          );
-
-          if (passwordIsValid) return user;
-        }
-        return null;
-      },
-    }),
-    ResendProvider({
-      server: {
-        host: env.RESEND_HOST,
-        port: Number(env.RESEND_PORT),
-        auth: {
-          user: env.RESEND_USERNAME,
-          pass: env.RESEND_API_KEY,
-        },
-      },
-      async sendVerificationRequest({
-        identifier,
-        url,
-      }: {
-        identifier: string;
-        url: string;
-      }) {
-        try {
-          await resend.emails.send({
-            from: env.RESEND_EMAIL_FROM,
-            to: [identifier],
-            subject: `${siteConfig.name} magic link sign in`,
-            react: MagicLinkEmail({ identifier, url }),
-          });
-
-          console.log("Verification email sent");
-        } catch (error) {
-          throw new Error("Failed to send verification email");
-        }
+        const passwordIsValid = await bcryptjs.compare(
+          password,
+          user.passwordHash
+        );
+        return passwordIsValid ? user : null;
       },
     }),
   ],
-} satisfies NextAuthConfig;
+});
