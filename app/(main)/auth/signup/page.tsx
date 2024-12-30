@@ -152,7 +152,7 @@ export default function SignUpPage() {
 
                 {/* Terms and Policy Checkbox */}
                 <div className="flex items-center gap-2 mt-4">
-                  <Checkbox id="terms" />
+                  <Checkbox id="terms" color="#5771FF" />
                   <label htmlFor="terms" className="text-sm font-medium">
                     I agree with <span className="text-[#5771FF]">Terms</span>{" "}
                     and <span className="text-[#5771FF]">Policy</span>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
@@ -156,7 +157,9 @@ export default function SignUpPage() {
 
                 <div className="text-center mt-4 -ml-60">
                   {" "}
-                  <span className="text-gray-600">Don't have an account? </span>
+                  <span className="text-gray-600">
+                    Don&apos;t have an account?{" "}
+                  </span>
                   <a
                     href="signup"
                     className="text-[#5771FF] font-semibold hover:underline "
