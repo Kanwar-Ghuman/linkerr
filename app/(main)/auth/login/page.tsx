@@ -178,7 +178,6 @@ export default function SignUpPage() {
                   Sign in with Google
                 </Button>
               </div>
-
               <div className="text-center md:-ml-64 text-sm md:text-base">
                 <span className="text-gray-600">Don't have an account? </span>
                 <Link
@@ -190,6 +189,7 @@ export default function SignUpPage() {
               </div>
             </form>
           </Form>
+
         </div>
       </div>
 
