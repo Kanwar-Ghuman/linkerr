@@ -19,7 +19,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -48,9 +47,8 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#A2B0FF]">
+    <div className="min-h-screen md:bg-[#A2B0FF]">
       <div className="min-h-screen flex flex-col md:flex-row overflow-hidden relative">
-        {/* Mobile Logo (Top) */}
         <div className="md:hidden p-8 bg-white flex justify-center items-center rounded-b-[25px]">
           <Image
             src="/linkerr.png"
@@ -62,7 +60,6 @@ export default function SignUpPage() {
           />
         </div>
 
-        {/* Mobile Image */}
         <div className="md:hidden w-full h-[250px] bg-white mb-6">
           <Image
             src="/people.png"
@@ -74,8 +71,7 @@ export default function SignUpPage() {
           />
         </div>
 
-        {/* Form Section */}
-        <div className="w-full md:w-1/2 bg-white rounded-tr-[25px] md:rounded-tr-[50px] rounded-br-[25px] md:rounded-br-[50px] relative z-10 p-4 md:p-8">
+        <div className="w-full md:w-1/2 bg-white md:rounded-tr-[50px] md:rounded-br-[50px] relative z-10 p-4 md:p-8">
           <div className="hidden md:block">
             <Image
               src="/linkerr.png"
@@ -100,7 +96,6 @@ export default function SignUpPage() {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-6 md:space-y-12 mt-6"
               >
-                {/* Form fields */}
                 <div className="space-y-4 md:space-y-8">
                   <FormField
                     control={form.control}
@@ -196,9 +191,7 @@ export default function SignUpPage() {
           </div>
         </div>
 
-        {/* Purple Section (Right Side) */}
-        <div className="hidden md:block md:w-1/2 bg-[#A2B0F]">
-          {/* Add any content for the right side here */}
+        <div className="hidden md:block md:w-1/2 bg-[#A2B0FF]">
           <div className="flex justify-end h-screen">
             <Image
               src="/image.png"
