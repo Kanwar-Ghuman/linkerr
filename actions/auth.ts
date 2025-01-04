@@ -6,8 +6,10 @@ import { prisma } from "@/config/db";
 import { getUserByEmail } from "@/actions/user";
 import { signIn } from "@/auth";
 import {
+  linkOAuthAccount,
   signInWithPasswordSchema,
   signUpWithPasswordSchema,
+  type LinkOAuthAccountInput,
   type SignInWithPasswordFormInput,
   type SignUpWithPasswordFormInput,
 } from "@/validations/auth";
@@ -64,5 +66,26 @@ export async function signInWithPassword(
       return "invalid-credentials";
     }
     throw error;
+  }
+}
+
+export async function linkOAuthAccount(
+  rawInput: LinkOAuthAccountInput
+): Promise<void> {
+  try {
+    const validatedInput = linkOAuthAccountSchema.safeParse(rawInput);
+    if (!validatedInput.success) return;
+
+    await prisma.user.update({
+      where: {
+        id: validatedInput.data.userId,
+      },
+      data: {
+        emailVerified: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    throw new Error("Error linking OAuth account");
   }
 }
