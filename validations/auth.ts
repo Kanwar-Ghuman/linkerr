@@ -47,9 +47,15 @@ export const signInWithPasswordSchema = z.object({
   password: z.string(),
 });
 
+export const linkOAuthAccountSchema = z.object({
+  userId: userIdSchema,
+});
+
 export type SignUpWithPasswordFormInput = z.infer<
   typeof signUpWithPasswordSchema
 >;
 export type SignInWithPasswordFormInput = z.infer<
   typeof signInWithPasswordSchema
 >;
+
+export type LinkOAuthAccountInput = z.infer<typeof linkOAuthAccountSchema>;
