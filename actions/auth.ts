@@ -6,7 +6,7 @@ import { prisma } from "@/config/db";
 import { getUserByEmail } from "@/actions/user";
 import { signIn } from "@/auth";
 import {
-  linkOAuthAccountSchema,
+  linkOAuthAccount,
   signInWithPasswordSchema,
   signUpWithPasswordSchema,
   type LinkOAuthAccountInput,
@@ -81,7 +81,7 @@ export async function linkOAuthAccount(
         id: validatedInput.data.userId,
       },
       data: {
-        emailVerifiedAt: new Date(),
+        emailVerified: new Date(),
       },
     });
   } catch (error) {
