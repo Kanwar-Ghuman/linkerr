@@ -53,7 +53,7 @@ export default function SignUpPage() {
 
   async function handleOAuthSignIn(provider: "google") {
     try {
-      await signIn(provider, { callbackUrl: "/" });
+      await signIn(provider, { callbackUrl: "/admin/dashboard" });
       toast({ title: "Success!", description: "You are now signed in" });
     } catch (error) {
       toast({
