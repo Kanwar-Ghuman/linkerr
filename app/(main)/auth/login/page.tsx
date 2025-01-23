@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +20,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -46,6 +48,22 @@ export default function SignUpPage() {
     console.log(values);
   }
 
+  const { toast } = useToast();
+
+  async function handleOAuthSignIn(provider: "google") {
+    try {
+      await signIn(provider, { callbackUrl: "/" });
+      toast({ title: "Success!", description: "You are now signed in" });
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again",
+        variant: "destructive",
+      });
+      console.error(error);
+    }
+  }
+
   return (
     <div className="min-h-screen md:bg-[#A2B0FF]">
       <div className="min-h-screen flex flex-col md:flex-row overflow-hidden relative">
@@ -55,18 +73,18 @@ export default function SignUpPage() {
             alt="Linkerr Logo"
             width={150}
             height={50}
-            className="object-contain"
+            className="object-contain w-[150px] h-[50px]"
             priority
           />
         </div>
 
         <div className="md:hidden w-full h-[250px] bg-white mb-6">
           <Image
-            src="/people.png"
+            src="/pep.png"
             alt="Right side image"
             width={500}
             height={250}
-            className="object-contain w-full h-full"
+            className="object-contain w-[500px] h-[250px]"
             priority
           />
         </div>
@@ -76,9 +94,9 @@ export default function SignUpPage() {
             <Image
               src="/linkerr.png"
               alt="Linkerr Logo"
-              width={100}
-              height={35}
-              className="object-contain md:w-[150px] md:h-[50px]"
+              width={150}
+              height={50}
+              className="object-contain w-[150px] h-[50px]"
               priority
             />
           </div>
@@ -162,6 +180,7 @@ export default function SignUpPage() {
                   <Button
                     type="button"
                     variant="outline"
+                    onClick={() => handleOAuthSignIn("google")}
                     className="w-full md:w-[400px] h-[40px] md:h-[50px]"
                   >
                     <Image
