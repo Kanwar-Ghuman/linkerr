@@ -4,10 +4,9 @@ import { BaseNavbar } from "./baseNavbar";
 import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 
 export async function AdminNavbar({ user }: AdminNavbarProps) {
-    const menuItems: MenuItem[] = [
-        { label: "Home", link: "/admin/dashboard" },
-        { label: "Company Reviews", link: "/admin/company-reviews" },
-    ];
+    console.log("Current user data:", user);
+
+    const menuItems: MenuItem[] = [{ label: "Home", link: "/admin/dashboard" }];
 
     const profile: ProfileItem[] = [
         {
@@ -15,7 +14,7 @@ export async function AdminNavbar({ user }: AdminNavbarProps) {
             label: (
                 <>
                     <p className="font-semibold">Signed in as</p>
-                    <p className="font-semibold">{user.email}</p>
+                    <p className="font-semibold">{user?.email}</p>
                 </>
             ),
             className: "h-20  gap-2",
@@ -27,7 +26,7 @@ export async function AdminNavbar({ user }: AdminNavbarProps) {
     return (
         <BaseNavbar
             menuItems={menuItems}
-            profileItems={[[user.name, user.image], profile]}
+            profileItems={[[user?.name || "", user?.image || ""], profile]} // Add fallbacks
         />
     );
 }
