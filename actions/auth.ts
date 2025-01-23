@@ -81,7 +81,7 @@ export async function linkOAuthAccount(
         id: validatedInput.data.userId,
       },
       data: {
-        emailVerifiedAt: new Date(),
+        emailVerified: new Date(),
       },
     });
   } catch (error) {
