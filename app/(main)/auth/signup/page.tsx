@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import React, { useState } from "react";
@@ -7,6 +8,8 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useToast } from "@/hooks/use-toast";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -45,6 +48,21 @@ export default function SignUpPage() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
+  }
+  const { toast } = useToast();
+
+  async function handleOAuthSignIn(provider: "google") {
+    try {
+      await signIn(provider, { callbackUrl: "/" });
+      toast({ title: "Success!", description: "You are now signed in" });
+    } catch (error) {
+      toast({
+        title: "Something went wrong",
+        description: "Please try again",
+        variant: "destructive",
+      });
+      console.error(error);
+    }
   }
 
   return (
@@ -190,9 +208,9 @@ export default function SignUpPage() {
                   </Button>
                   <Button
                     type="button"
-                    onClick={() => handleOAuthSignIn("google")}
                     variant="outline"
                     className="w-full md:w-[400px] h-[40px] md:h-[50px]"
+                    onClick={() => void handleOAuthSignIn("google")}
                   >
                     <Image
                       src="/google.png"
