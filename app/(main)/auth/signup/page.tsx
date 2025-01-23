@@ -190,6 +190,7 @@ export default function SignUpPage() {
                   </Button>
                   <Button
                     type="button"
+                    onClick={() => handleOAuthSignIn("google")}
                     variant="outline"
                     className="w-full md:w-[400px] h-[40px] md:h-[50px]"
                   >
