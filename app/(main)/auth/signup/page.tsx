@@ -10,8 +10,11 @@ import { z } from "zod";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
+<<<<<<< HEAD
 
 import { RoleSelector } from "@/components/home/RoleSelector";
+=======
+>>>>>>> fa01c3d (working oauth)
 
 import { Button } from "@/components/ui/button";
 import {
@@ -57,6 +60,7 @@ export default function SignUpPage() {
   const { toast } = useToast();
 
   async function handleOAuthSignIn(provider: "google") {
+<<<<<<< HEAD
     if (!selectedRole) {
       toast({
         title: "Please select a role",
@@ -71,6 +75,10 @@ export default function SignUpPage() {
         callbackUrl: "/admin/dashboard",
         role: selectedRole,
       });
+=======
+    try {
+      await signIn(provider, { callbackUrl: "/" });
+>>>>>>> fa01c3d (working oauth)
       toast({ title: "Success!", description: "You are now signed in" });
     } catch (error) {
       toast({
