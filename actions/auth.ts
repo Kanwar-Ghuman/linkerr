@@ -6,7 +6,7 @@ import { prisma } from "@/config/db";
 import { getUserByEmail } from "@/actions/user";
 import { signIn } from "@/auth";
 import {
-  linkOAuthAccount,
+  linkOAuthAccountSchema,
   signInWithPasswordSchema,
   signUpWithPasswordSchema,
   type LinkOAuthAccountInput,
