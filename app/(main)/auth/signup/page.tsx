@@ -11,6 +11,8 @@ import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useToast } from "@/hooks/use-toast";
 
+import { RoleSelector } from "@/components/home/RoleSelector";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -34,8 +36,11 @@ const formSchema = z.object({
     .min(6, { message: "Password must be at least 6 characters" }),
 });
 
+type UserRole = "student" | "employer" | "admin";
+
 export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -52,8 +57,20 @@ export default function SignUpPage() {
   const { toast } = useToast();
 
   async function handleOAuthSignIn(provider: "google") {
+    if (!selectedRole) {
+      toast({
+        title: "Please select a role",
+        description: "You must select a role before signing up",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
-      await signIn(provider, { callbackUrl: "/admin/dashboard" });
+      await signIn(provider, {
+        callbackUrl: "/admin/dashboard",
+        role: selectedRole,
+      });
       toast({ title: "Success!", description: "You are now signed in" });
     } catch (error) {
       toast({
@@ -197,6 +214,13 @@ export default function SignUpPage() {
                     I agree with <span className="text-[#5771FF]">Terms</span>{" "}
                     and <span className="text-[#5771FF]">Policy</span>
                   </label>
+                </div>
+
+                <div className="w-full md:w-[400px]">
+                  <RoleSelector
+                    selectedRole={selectedRole}
+                    onRoleSelect={setSelectedRole}
+                  />
                 </div>
 
                 <div className="flex flex-col space-y-4 md:space-y-8">
