@@ -11,13 +11,20 @@ export default {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
       allowDangerousEmailAccountLinking: true,
+      profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          email: profile.email,
+          image: profile.picture,
+          role: "student", // Default role
+        };
+      },
     }),
-
     CredentialsProvider({
       async authorize(rawCredentials) {
         const validatedCredentials =
           signInWithPasswordSchema.safeParse(rawCredentials);
-
         if (!validatedCredentials.success) return null;
 
         const { email, password } = validatedCredentials.data;
