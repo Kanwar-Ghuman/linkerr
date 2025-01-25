@@ -13,7 +13,7 @@ import {
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { usePathname } from "next/navigation";
 import React from "react";
 import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
