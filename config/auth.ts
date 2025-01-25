@@ -17,7 +17,6 @@ export default {
           name: profile.name,
           email: profile.email,
           image: profile.picture,
-          role: "student", // Default role
         };
       },
     }),
