@@ -5,8 +5,8 @@ import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 
 export async function AdminNavbar({ user }: AdminNavbarProps) {
   const menuItems: MenuItem[] = [
-    { label: "Dashboard", link: "/admin/tutor-requests" },
-    { label: "Add Tutor", link: "/admin/add-tutor" },
+    { label: "Home", link: "/admin/dashboard" },
+    { label: "Company Reviews", link: "/admin/company-reviews" },
   ];
 
   const profile: ProfileItem[] = [
@@ -18,7 +18,7 @@ export async function AdminNavbar({ user }: AdminNavbarProps) {
           <p className="font-semibold">{user.email}</p>
         </>
       ),
-      className: "h-14 gap-2",
+      className: "h-20  gap-2",
       link: "/profile",
     },
     { key: "logout", label: "Log Out", color: "danger" },
