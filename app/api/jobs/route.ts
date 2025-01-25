@@ -1,5 +1,6 @@
 import { prisma } from "@/config/db";
 import { JobValidation } from "@/lib/forms/schemas";
+import { Prisma } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -21,7 +22,7 @@ export async function POST(
 
         const {
             jobTitle,
-            jobDesctiption,
+            jobDescription,
             jobType,
             roleLocation,
             companyName,
@@ -34,13 +35,13 @@ export async function POST(
         const newJob = await prisma.job.create({
             data: {
                 jobTitle,
-                jobDesctiption,
+                jobDescription,
                 jobType,
                 roleLocation,
                 companyName,
                 remote,
                 skills,
-                pay,
+                pay: new Prisma.Decimal(pay),
                 education,
             },
         });

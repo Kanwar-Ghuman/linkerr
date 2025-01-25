@@ -73,7 +73,7 @@ enum JobStatus {
 model Job {
     id             String     @id @default(cuid())
     jobTitle       String
-    jobDesctiption String
+    jobDescription String
     jobType        String?
     roleLocation   String?
     companyName    String

@@ -21,7 +21,7 @@ interface FormInputProps {
     isRequired: boolean,
 }
 
-const LinkerrInput = ({
+const FormInput = ({
     form,
     name,
     label,
@@ -30,12 +30,12 @@ const LinkerrInput = ({
     isRequired
 }: FormInputProps): JSX.Element => {
     const requiredAsterik = isRequired ? (
-        <span className="text-destructive" >* </span>
+        <span className="text-destructive">*</span>
     ) : (
         ""
     );
 
-    return <>{
+    return (
         <FormField
             control={form.control}
             name={name}
@@ -45,33 +45,27 @@ const LinkerrInput = ({
                         <FormLabel>
                             {label} {requiredAsterik}
                         </FormLabel>
-                        < FormControl >
-                            <div className="relative" >
+                        <FormControl>
+                            <div className="relative">
                                 <Input
                                     placeholder={placeholder}
                                     {...field}
                                     value={field.value || ""}
-                                // className={
-                                //     name === "studentEmail" || name === "studentsEmail"
-                                //         ? "pr-[165px]"
-                                //         : ""
-                                // }
                                 />
                             </div>
                         </FormControl>
-                        {
-                            field.name in form.formState.errors ? (
-                                <FormMessage />
-                            ) : (
-                                <FormDescription>
-                                    {description}
-                                </FormDescription>
-                            )}
+                        {field.name in form.formState.errors ? (
+                            <FormMessage />
+                        ) : (
+                            <FormDescription>
+                                {description}
+                            </FormDescription>
+                        )}
                     </FormItem>
                 );
             }}
         />
-    }</>
+    );
 };
 
-export { LinkerrInput };
+export { FormInput };

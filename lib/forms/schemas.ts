@@ -1,4 +1,3 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { z } from "zod";
 
 // 1. Define the JobType enum validation with a custom error message
@@ -23,11 +22,11 @@ export const JobValidation = z.object({
         .min(1, { message: "'jobTitle' cannot be empty." }),
 
     // 'jobDesctiption' must be a string and cannot be empty
-    jobDesctiption: z
+    jobDescription: z
         .string({
-            required_error: "'jobDesctiption' is required.",
+            required_error: "'jobDescription' is required.",
         })
-        .min(1, { message: "'jobDesctiption' cannot be empty." }),
+        .min(1, { message: "'jobDescription' cannot be empty." }),
 
     // Optional fields (can be undefined or empty string)
     jobType: z.string().optional().or(z.literal("")),
@@ -81,12 +80,12 @@ export enum JobTypeEnum {
 // Interface matching your Prisma model
 export interface Job {
     jobTitle: string;
-    jobDesctiption: string;
+    jobDescription: string;
     jobType?: string;        // optional
     roleLocation?: string;   // optional
     companyName: string;
     remote: JobTypeEnum;         // must be one of the enum values
     skills: string[];        // required array of strings
-    pay: Decimal;            // matches Prisma Decimal
+    pay: string;            // matches Prisma Decimal
     education: string[];     // required array of strings
 }
