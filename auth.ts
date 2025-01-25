@@ -2,6 +2,7 @@ import { linkOAuthAccount } from "@/actions/auth";
 import { getUserById } from "@/actions/user";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import NextAuth from "next-auth";
+import { Role } from "@prisma/client";
 
 import authConfig from "@/config/auth";
 import { prisma } from "@/config/db";
@@ -12,6 +13,7 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
+  ...authConfig,
   debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/signin",
@@ -30,35 +32,49 @@ export const {
     },
   },
   callbacks: {
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async jwt({ token, user }) {
-      if (user) token.role = user.role;
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.role = user.role as Role;
+      }
+
+      if (account?.provider === "google" && account.role) {
+        const userRole = account.role as Role;
+        token.role = userRole;
+
+        await prisma.user.update({
+          where: { id: token.sub! },
+          data: {
+            role: userRole,
+          },
+        });
+      }
       return token;
     },
-    // eslint-disable-next-line @typescript-eslint/require-await
+
     async session({ session, token }) {
-      // if they have an id (sub) and user has been created, return it
       if (token.sub && session.user) {
         session.user.id = token.sub;
       }
 
-      // if they have a role and user has been created, return it
       if (token.role && session.user) {
-        session.user.role = token.role as "USER" | "ADMIN";
+        session.user.role = token.role as Role;
       }
 
       return session;
     },
+
     async signIn({ user, account }) {
       if (!user.id) return false;
-      if (account?.provider !== "credentials") return true;
+
+      // Allow OAuth providers
+      if (account?.provider !== "credentials") {
+        return true;
+      }
 
       const existingUser = await getUserById({ id: user.id });
-
       return !existingUser?.emailVerified ? false : true;
     },
   },
 
   adapter: PrismaAdapter(prisma),
-  ...authConfig,
 });
