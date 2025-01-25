@@ -9,32 +9,31 @@ import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createJobListingRequest } from "@/lib/forms/schemas";
+import { JobValidation, JobTypeEnum, Job } from "@/lib/forms/schemas";
+import { Decimal } from "@prisma/client/runtime/library";
 
 const CreateRequest = () => {
-    interface JobListing {
-        jobTitle: string
-        jobDescription: string
-        contactEmail: string
-        // tag: string
-    }
-
-    const defaultValues: JobListing = {
+    const defaultValues: Job = {
         jobTitle: "",
-        jobDescription: "",
-        contactEmail: "",
-        // tag: "",
-    }
+        jobDesctiption: "",
+        jobType: "",
+        roleLocation: "",
+        companyName: "",
+        remote: JobTypeEnum.remote, // could also be JobType.onsite or JobType.hybrid
+        skills: [],
+        pay: new Decimal(0),    // Default 0 as a Decimal
+        education: [],
+    };
 
     const form = useForm({
-        resolver: zodResolver(createJobListingRequest),
+        resolver: zodResolver(JobValidation),
         defaultValues,
     });
 
     const [loading] = useState(false);
     const [success] = useState(false);
 
-    async function onSubmit(data: JobListing) {
+    async function onSubmit(data: Job) {
         console.log("Form submitted with data:", data);
     }
 
