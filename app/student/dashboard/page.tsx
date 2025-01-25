@@ -10,8 +10,8 @@ import { Filter } from "lucide-react"; // Add this import at top
 
 const Page = () => {
   return (
-    <main className="min-h-screen p-6 bg-white">
-      <div className="max-w-7xl mx-auto mt-8 bg-white shadow-sm rounded-lg p-4 h-screen">
+    <main className="min-h-screen p-6 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto mt-8 bg-white shadow-sm rounded-lg p-4 h-screen overflow-hidden">
         <div className="flex justify-between gap-4 mb-6">
           <Button
             variant="outline"
