@@ -1,4 +1,3 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { z } from "zod";
 
 // 1. Define the JobType enum validation with a custom error message

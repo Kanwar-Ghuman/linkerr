@@ -34,7 +34,7 @@ const CreateRequest = () => {
         remote: JobTypeEnum.remote,
         skills: [],
         pay: "0.0",
-        education: [],
+       education: [],
     };
 
     const form = useForm({
