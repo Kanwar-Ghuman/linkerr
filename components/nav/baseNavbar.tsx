@@ -14,11 +14,11 @@ import {
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@heroui/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
 import Image from "next/image";
-// import { signOut } from "../../auth/signout";
+import signOut from "@/app/(main)/auth/signout/page";
 
 export function BaseNavbar({
   logoLink,
@@ -27,6 +27,18 @@ export function BaseNavbar({
 }: BaseNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const routerUrl = usePathname();
+
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      router.push("/auth/login");
+    } catch (error) {
+      console.error("Sign out error:", error);
+      router.push("/auth/login");
+    }
+  };
 
   return (
     <Navbar
@@ -116,7 +128,7 @@ export function BaseNavbar({
                   key={item.key}
                   color={item.color}
                   className={item.className}
-                  // onClick={item.key === "logout" ? () => signOut() : undefined}
+                  onPress={item.key === "logout" ? handleSignOut : undefined}
                 >
                   {item.label}
                 </DropdownItem>
