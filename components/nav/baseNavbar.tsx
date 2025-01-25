@@ -17,6 +17,7 @@ import {
 import { usePathname } from "next/navigation";
 import React from "react";
 import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
+import Image from "next/image";
 // import { signOut } from "../../auth/signout";
 
 export function BaseNavbar({
@@ -31,6 +32,7 @@ export function BaseNavbar({
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       maxWidth="full"
+      className="bg-white p-3"
       classNames={{
         item: [
           "flex",
@@ -44,7 +46,7 @@ export function BaseNavbar({
           "data-[active=true]:after:right-0",
           "data-[active=true]:after:h-[2px]",
           "data-[active=true]:after:rounded-[2px]",
-          "data-[active=true]:after:bg-primary",
+          "data-[active=true]:after:bg-[#5771FF]",
         ],
       }}
     >
@@ -55,14 +57,22 @@ export function BaseNavbar({
         />
         {logoLink ? (
           <Link href={logoLink}>
-            <h1 className="text-lg font-semibold text-primary mr-6 whitespace-nowrap">
-              <span className="text-black">NHS</span> TutorMe
-            </h1>
+            <Image
+              src="/linkerr.png"
+              alt="Linkerr Logo"
+              width={120}
+              height={40}
+              className="mr-6"
+            />
           </Link>
         ) : (
-          <h1 className="text-lg font-semibold text-primary mr-6 whitespace-nowrap">
-            <span className="text-black">NHS</span> TutorMe
-          </h1>
+          <Image
+            src="/linkerr.png"
+            alt="Linkerr Logo"
+            width={120}
+            height={40}
+            className="mr-6"
+          />
         )}
 
         <NavbarContent className="hidden sm:flex gap-6" justify="center">
@@ -75,6 +85,7 @@ export function BaseNavbar({
                 href={item.link}
                 aria-current={routerUrl === item.link ? "page" : undefined}
                 color={routerUrl === item.link ? "primary" : "foreground"}
+                className="text-gray-700 hover:text-gray-900"
               >
                 {item.label}
               </Link>
