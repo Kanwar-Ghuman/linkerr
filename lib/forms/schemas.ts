@@ -1,3 +1,4 @@
+import { Decimal } from "@prisma/client/runtime/library";
 import { z } from "zod";
 
 // 1. Define the JobType enum validation with a custom error message
@@ -27,7 +28,6 @@ export const JobValidation = z.object({
             required_error: "'jobDescription' is required.",
         })
         .min(1, { message: "'jobDescription' cannot be empty." }),
-
     // Optional fields (can be undefined or empty string)
     jobType: z.string().optional().or(z.literal("")),
     roleLocation: z.string().optional().or(z.literal("")),

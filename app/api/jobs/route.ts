@@ -1,6 +1,9 @@
 import { prisma } from "@/config/db";
 import { JobValidation } from "@/lib/forms/schemas";
+<<<<<<< HEAD
 import { Prisma } from "@prisma/client";
+=======
+>>>>>>> 8114418 (worked on the schemas and database job listing creation)
 import { NextResponse } from "next/server";
 
 export async function POST(
@@ -22,7 +25,11 @@ export async function POST(
 
         const {
             jobTitle,
+<<<<<<< HEAD
             jobDescription,
+=======
+            jobDesctiption,
+>>>>>>> 8114418 (worked on the schemas and database job listing creation)
             jobType,
             roleLocation,
             companyName,
@@ -35,13 +42,21 @@ export async function POST(
         const newJob = await prisma.job.create({
             data: {
                 jobTitle,
+<<<<<<< HEAD
                 jobDescription,
+=======
+                jobDesctiption,
+>>>>>>> 8114418 (worked on the schemas and database job listing creation)
                 jobType,
                 roleLocation,
                 companyName,
                 remote,
                 skills,
+<<<<<<< HEAD
                 pay: new Prisma.Decimal(pay),
+=======
+                pay,
+>>>>>>> 8114418 (worked on the schemas and database job listing creation)
                 education,
             },
         });
