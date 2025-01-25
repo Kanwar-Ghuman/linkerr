@@ -1,28 +1,10 @@
 "use server";
+
 import { BaseNavbar } from "./baseNavbar";
+import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 
-interface User {
-  email: string;
-  name: string;
-  image: string;
-}
-
-interface ProfileItem {
-  key: string;
-  label: string | JSX.Element; // Allow both string and JSX.Element
-  className?: string;
-  link?: string;
-  color?:
-    | "default"
-    | "secondary"
-    | "success"
-    | "primary"
-    | "warning"
-    | "danger";
-}
-
-export async function AdminNavbar({ user }: { user: User }) {
-  const menuItems = [
+export async function AdminNavbar({ user }: AdminNavbarProps) {
+  const menuItems: MenuItem[] = [
     { label: "Dashboard", link: "/admin/tutor-requests" },
     { label: "Add Tutor", link: "/admin/add-tutor" },
   ];
@@ -39,7 +21,6 @@ export async function AdminNavbar({ user }: { user: User }) {
       className: "h-14 gap-2",
       link: "/profile",
     },
-
     { key: "logout", label: "Log Out", color: "danger" },
   ];
 

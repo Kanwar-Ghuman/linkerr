@@ -16,31 +16,8 @@ import {
 } from "@nextui-org/react";
 import { usePathname } from "next/navigation";
 import React from "react";
-
-interface MenuItem {
-  label: string;
-  link: string;
-}
-
-interface ProfileItem {
-  key: string;
-  label: string | JSX.Element;
-  className?: string;
-  link?: string;
-  color?:
-    | "primary"
-    | "secondary"
-    | "success"
-    | "warning"
-    | "danger"
-    | "default";
-}
-
-interface BaseNavbarProps {
-  logoLink?: string;
-  menuItems?: MenuItem[];
-  profileItems: [string[], ProfileItem[]];
-}
+import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
+// import { signOut } from "../../auth/signout";
 
 export function BaseNavbar({
   logoLink,
@@ -48,7 +25,6 @@ export function BaseNavbar({
   profileItems,
 }: BaseNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-
   const routerUrl = usePathname();
 
   return (
@@ -107,7 +83,7 @@ export function BaseNavbar({
         </NavbarContent>
       </NavbarContent>
       <NavbarContent justify="end">
-        {Array.isArray(profileItems) && profileItems.length > 0 ? (
+        {Array.isArray(profileItems) && profileItems.length === 2 ? (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Avatar
@@ -115,24 +91,21 @@ export function BaseNavbar({
                 as="button"
                 className="transition-transform"
                 color="secondary"
-                name={profileItems[0][0]}
+                name={(profileItems as ProfileTuple)[0][0]}
                 size="sm"
-                src={profileItems[0][1]}
+                src={(profileItems as ProfileTuple)[0][1]}
               />
             </DropdownTrigger>
-            <DropdownMenu aria-label="Dynamic Actions" items={profileItems[1]}>
+            <DropdownMenu
+              aria-label="Dynamic Actions"
+              items={(profileItems as ProfileTuple)[1]}
+            >
               {(item) => (
                 <DropdownItem
                   key={item.key}
-                  color={item.color ? item.color : "default"}
-                  className={item.className ? item.className : ""}
-                  //   onClick={
-                  //     item.key === "logout"
-                  //       ? () => {
-                  //         //   signOut();
-                  //         }
-                  //       : undefined
-                  //   }
+                  color={item.color}
+                  className={item.className}
+                  // onClick={item.key === "logout" ? () => signOut() : undefined}
                 >
                   {item.label}
                 </DropdownItem>
@@ -140,10 +113,7 @@ export function BaseNavbar({
             </DropdownMenu>
           </Dropdown>
         ) : (
-          <div>
-            <span></span>
-            {profileItems}
-          </div>
+          <div>{profileItems}</div>
         )}
       </NavbarContent>
       <NavbarMenu>
@@ -152,7 +122,12 @@ export function BaseNavbar({
             key={`${item.label}-${index}`}
             isActive={routerUrl === item.link}
           >
-            <Link className="w-full" href={item.link} size="lg">
+            <Link
+              className="w-full"
+              href={item.link}
+              size="lg"
+              color={routerUrl === item.link ? "primary" : "foreground"}
+            >
               {item.label}
             </Link>
           </NavbarMenuItem>
