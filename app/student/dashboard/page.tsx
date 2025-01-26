@@ -6,7 +6,6 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Filter } from "lucide-react"; // Add this import at top
 
 const Page = () => {
   return (
