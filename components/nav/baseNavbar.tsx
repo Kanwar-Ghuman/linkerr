@@ -28,6 +28,24 @@ export function BaseNavbar({
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const routerUrl = usePathname();
 
+  const getInitialsAvatar = (name: string) => {
+    const initial = name?.charAt(0)?.toUpperCase() || "?";
+    const colors = ["#007AFF", "#34C759", "#FF9500", "#FF2D55", "#5856D6"];
+    const colorIndex = Math.floor(Math.random() * colors.length);
+
+    return `data:image/svg+xml,${encodeURIComponent(`
+      <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
+        <rect width="100%" height="100%" fill="${colors[colorIndex]}"/>
+        <text x="50%" y="50%" dy=".35em" 
+          text-anchor="middle" 
+          fill="white" 
+          font-family="Arial" 
+          font-size="20"
+        >${initial}</text>
+      </svg>
+    `)}`;
+  };
+
   const router = useRouter();
 
   const handleSignOut = async () => {
@@ -44,7 +62,7 @@ export function BaseNavbar({
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       maxWidth="full"
-      className="bg-white p-3"
+      className="bg-gradient-to-br from-blue-100 to-white p-5"
       classNames={{
         item: [
           "flex",
@@ -116,12 +134,16 @@ export function BaseNavbar({
                 color="secondary"
                 name={(profileItems as ProfileTuple)[0][0]}
                 size="sm"
-                src={(profileItems as ProfileTuple)[0][1]}
+                src={
+                  (profileItems as ProfileTuple)[0][1] ||
+                  getInitialsAvatar((profileItems as ProfileTuple)[0][0])
+                }
               />
             </DropdownTrigger>
             <DropdownMenu
               aria-label="Dynamic Actions"
               items={(profileItems as ProfileTuple)[1]}
+              className="bg-white"
             >
               {(item) => (
                 <DropdownItem

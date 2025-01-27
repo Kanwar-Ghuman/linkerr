@@ -4,7 +4,7 @@ import React, { ReactNode } from "react";
 
 import { isLoggedIn } from "@/lib/auth/validate";
 import { redirect } from "next/navigation";
-import { StudentNavbar } from "@/components/nav/plainNavbar";
+import { EmployerNavbar } from "@/components/nav/employerNavbar";
 
 async function Layout({ children }: { children: ReactNode }) {
   const { isValid, user, error } = await isLoggedIn();
@@ -15,7 +15,7 @@ async function Layout({ children }: { children: ReactNode }) {
 
   return (
     <div className="bg-gradient-to-br from-blue-100 to-white">
-      <StudentNavbar user={user} />
+      <EmployerNavbar user={user} />
       {children}
     </div>
   );
