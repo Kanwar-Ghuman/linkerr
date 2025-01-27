@@ -36,10 +36,10 @@ export function BaseNavbar({
     return `data:image/svg+xml,${encodeURIComponent(`
       <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40">
         <rect width="100%" height="100%" fill="${colors[colorIndex]}"/>
-        <text x="50%" y="50%" dy=".35em"
-          text-anchor="middle"
-          fill="white"
-          font-family="Arial"
+        <text x="50%" y="50%" dy=".35em" 
+          text-anchor="middle" 
+          fill="white" 
+          font-family="Arial" 
           font-size="20"
         >${initial}</text>
       </svg>
