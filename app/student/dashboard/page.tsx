@@ -48,7 +48,7 @@ const Page = () => {
               >
                 <div className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">Settings</h3>
+                  <h3 className="text-lg font-thin">Settings</h3>
                 </div>
                 {openSettings ? <ChevronUp /> : <ChevronDown />}
               </div>
@@ -105,12 +105,12 @@ const Page = () => {
           {/* Left Column with 5 collapsible filter sections */}
           <div className="w-1/4 p-8 border-r space-y-8 overflow-auto">
             {/* 1) Job Category */}
-            <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenCategory(!openCategory)}
               >
-                <h3 className="text-lg font-semibold">Job Category</h3>
+                <h3 className="text-lg font-thin">Job Category</h3>
                 {openCategory ? <ChevronUp /> : <ChevronDown />}
               </div>
               {openCategory && (
@@ -132,12 +132,12 @@ const Page = () => {
             </div>
 
             {/* 2) Location */}
-            <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenLocation(!openLocation)}
               >
-                <h3 className="text-lg font-semibold">Location</h3>
+                <h3 className="text-lg font-thin">Location</h3>
                 {openLocation ? <ChevronUp /> : <ChevronDown />}
               </div>
               {openLocation && (
@@ -160,12 +160,12 @@ const Page = () => {
             </div>
 
             {/* 3) Job Type */}
-            <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenJobType(!openJobType)}
               >
-                <h3 className="text-lg font-semibold">Job Type</h3>
+                <h3 className="text-lg font-thin">Job Type</h3>
                 {openJobType ? <ChevronUp /> : <ChevronDown />}
               </div>
               {openJobType && (
@@ -183,12 +183,12 @@ const Page = () => {
             </div>
 
             {/* 4) Salary Range */}
-            <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenSalaryRange(!openSalaryRange)}
               >
-                <h3 className="text-lg font-semibold">Salary Range</h3>
+                <h3 className="text-lg font-thin">Salary Range</h3>
                 {openSalaryRange ? <ChevronUp /> : <ChevronDown />}
               </div>
               {openSalaryRange && (
@@ -202,12 +202,12 @@ const Page = () => {
             </div>
 
             {/* 5) Date Posted */}
-            <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenDatePosted(!openDatePosted)}
               >
-                <h3 className="text-lg font-semibold">Date Posted</h3>
+                <h3 className="text-lg font-thin">Date Posted</h3>
                 {openDatePosted ? <ChevronUp /> : <ChevronDown />}
               </div>
               {openDatePosted && (
