@@ -6,109 +6,126 @@ import { IoBookmarkOutline } from "react-icons/io5";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const Page = () => {
   return (
-    <main className="min-h-screen p-6 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto mt-8 bg-white shadow-sm rounded-lg p-4 h-screen overflow-hidden">
-        <div className="flex justify-between gap-4 mb-6">
+    <main className="min-h-screen bg-gradient-to-br from-blue-100 to-white">
+      <div className="h-screen flex flex-col pt-5">
+        <div className="flex justify-between gap-4 p-9">
           <Button
             variant="outline"
             size="default"
-            className="w-1/3 justify-start text-lg py-6"
+            className="w-[30%] justify-start text-lg py-6"
           >
             Settings
           </Button>
-          <div className="w-2/3 flex gap-2 items-center">
+
+          <div className="w-2/3 flex gap-2 items-center pl-8">
             <Input
               type="text"
               placeholder="Search..."
-              className="w-full bg-white border-gray-200 focus:ring-2 focus:ring-blue-500 text-black py-6"
+              className="w-[88%] bg-white border-gray-200 focus:ring-2 focus:ring-blue-500 text-black py-6"
             />
-            <Button variant="outline" size="icon" className="py-6">
-              <IoBookmarkOutline className="h-5 w-5" />
+            <Button variant="outline" size="icon" className="py-6 h-5 w-[3rem]">
+              <IoBookmarkOutline />
             </Button>
           </div>
         </div>
-        <Separator className="my-4" />
+        <Separator />
 
-        <div className="flex gap-6 h-[calc(100vh-200px)]">
+        <div className="flex flex-1 h-[calc(100vh-100px)]">
           {/* Left Column */}
-          <div className="w-1/3">
-            <div className="space-y-6 overflow-y-auto h-full -mt-11">
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Type</h3>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  All Items
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Recent
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Popular
-                </Button>
+          <div className="w-1/3 p-8 border-r space-y-6">
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Job Category</h3>
+              <div className="space-y-2">
+                {[
+                  "IT",
+                  "Marketing",
+                  "Finance",
+                  "Healthcare",
+                  "Hospitality",
+                ].map((category) => (
+                  <div key={category} className="flex items-center space-x-2">
+                    <Checkbox id={category} />
+                    <Label htmlFor={category}>{category}</Label>
+                  </div>
+                ))}
               </div>
+            </div>
 
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Category</h3>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Documents
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Images
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Videos
-                </Button>
-              </div>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Location</h3>
+              <Input placeholder="City, State or Zip" className="w-full" />
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Distance" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[10, 25, 50, 100].map((miles) => (
+                    <SelectItem key={miles} value={miles.toString()}>
+                      Within {miles} miles
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="space-y-4">
-                <h3 className="text-xl font-semibold">Date</h3>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Last 24 Hours
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Last Week
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start text-lg py-6"
-                >
-                  Last Month
-                </Button>
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Job Type</h3>
+              <div className="space-y-2">
+                {["Full-Time", "Part-Time", "Internship", "Contract"].map(
+                  (type) => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox id={type} />
+                      <Label htmlFor={type}>{type}</Label>
+                    </div>
+                  )
+                )}
               </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Salary Range</h3>
+              <div className="flex gap-2">
+                <Input placeholder="Min" type="number" className="w-1/2" />
+                <Input placeholder="Max" type="number" className="w-1/2" />
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold">Date Posted</h3>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select timeframe" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["Last 24 hours", "Last week", "Last month", "Any time"].map(
+                    (timeframe) => (
+                      <SelectItem key={timeframe} value={timeframe}>
+                        {timeframe}
+                      </SelectItem>
+                    )
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
           {/* Right Column */}
-          <div className="w-2/3">
-            <div className="space-y-4 flex flex-col h-full">
+          <div className="w-2/3 p-8 overflow-auto">
+            <div className="space-y-4">
               {[1, 2, 3].map((item) => (
-                <Card key={item} className="p-4 flex-1">
+                <Card key={item} className="p-6 min-h-[300px]">
                   <CardHeader>
                     <CardTitle className="text-2xl">Result {item}</CardTitle>
                   </CardHeader>

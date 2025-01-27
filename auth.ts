@@ -18,7 +18,6 @@ export const {
   pages: {
     signIn: "/signin",
     signOut: "/signout",
-    verifyRequest: "/signin/magic-link-signin",
   },
   secret: process.env.AUTH_SECRET,
   session: {
