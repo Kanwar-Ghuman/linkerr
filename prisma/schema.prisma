@@ -82,4 +82,5 @@ model Job {
     pay            Decimal
     education      String[]
     status         JobStatus? @default(pending)
+    createdAt      DateTime   @default(now())
 }
