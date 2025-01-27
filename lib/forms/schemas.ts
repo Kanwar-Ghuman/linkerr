@@ -43,9 +43,16 @@ export const JobValidation = z.object({
     remote: JobType,
 
     // 'skills' must be a non-empty array of strings
-    skills: z
-        .array(z.string().min(1, { message: "Skill entry cannot be empty." }))
-        .nonempty({ message: "'skills' must contain at least one skill." }),
+    skills: z.preprocess(
+        (val) => {
+            if (typeof val === "string") {
+                return val.split("/")
+            }
+            return val
+        },
+        z.array(z.string().min(1, { message: "Skill entry cannot be empty." }))
+            .nonempty({ message: "'skills' must contain at least one skill." }),
+    ),
 
     // 'pay' is a Decimal in Prisma. We'll parse it as a number in Zod.
     // In your actual implementation, ensure your incoming data is in the correct format (string or number).
@@ -63,11 +70,18 @@ export const JobValidation = z.object({
     ),
 
     // 'education' must be a non-empty array of strings
-    education: z
-        .array(
+    education: z.preprocess(
+        (val) => {
+            if (typeof val === "string") {
+                return val.split("/")
+            }
+            return val
+        },
+        z.array(
             z.string().min(1, { message: "Education entry cannot be empty." })
         )
-        .nonempty({ message: "'education' must contain at least one entry." }),
+            .nonempty({ message: "'education' must contain at least one entry." }),
+    )
 });
 
 // Reflects your enum in TypeScript

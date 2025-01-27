@@ -31,9 +31,9 @@ const CreateRequest = () => {
         jobType: "",
         roleLocation: "",
         companyName: "",
-        remote: JobTypeEnum.remote, // could also be JobType.onsite or JobType.hybrid
+        remote: JobTypeEnum.remote,
         skills: [],
-        pay: "0.0",    // Default 0 as a Decimal
+        pay: "0.0",
         education: [],
     };
 
@@ -42,61 +42,60 @@ const CreateRequest = () => {
         defaultValues,
     });
 
-    const [loading] = useState(false);
-    const [success] = useState(false);
-    const [error] = useState("");
-    const [submittedData] = useState<Job>(defaultValues);
-    const { isOpen, onOpenChange } = useDisclosure();
+    const [loading, setLoading] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState("");
+    const [submittedData, setSubmittedData] = useState<Job>(defaultValues);
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
     const router = useRouter();
 
     async function onSubmit(data: Job) {
-        console.log("Form submitted with data:", data);
-        // setLoading(true);
-        // setError("");
-        // try {
-        //     const formattedData = {
-        //         ...data,
-        //     };
-        //     console.log("Formatted data:", formattedData);
-        //
-        //     const response = await fetch("/api/jobs", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //         body: JSON.stringify(formattedData),
-        //     });
-        //
-        //     if (!response.ok) {
-        //         const errorData = await response.json();
-        //         console.error("API error:", errorData);
-        //         throw new Error(errorData.message || "Request failed");
-        //     }
-        //
-        //     const responseData = await response.json();
-        //     console.log("API response:", responseData);
-        //
-        //     await fetch("/api/admin/auto-match", {
-        //         method: "POST",
-        //         headers: {
-        //             "Content-Type": "application/json",
-        //         },
-        //     });
-        //
-        //     setSuccess(true);
-        //     setSubmittedData(formattedData);
-        //     form.reset(defaultValues);
-        //     onOpen();
-        //
-        //     setTimeout(() => {
-        //         setSuccess(false);
-        //     }, 2000);
-        // } catch (err) {
-        //     console.error("Error details:", err);
-        //     // setError(err.message || "An unexpected error occurred.");
-        // } finally {
-        //     setLoading(false);
-        // }
+        setLoading(true);
+        setError("");
+        try {
+            const formattedData = {
+                ...data,
+            };
+            console.log("Formatted data:", formattedData);
+
+            const response = await fetch("/api/jobs", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formattedData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("API error:", errorData);
+                throw new Error(errorData.message || "Request failed");
+            }
+
+            const responseData = await response.json();
+            console.log("API response:", responseData);
+
+            // await fetch("/api/admin/auto-match", {
+            //     method: "POST",
+            //     headers: {
+            //         "Content-Type": "application/json",
+            //     },
+            // });
+
+            setSuccess(true);
+            setSubmittedData(formattedData);
+            form.reset(defaultValues);
+            onOpen();
+
+            setTimeout(() => {
+                setSuccess(false);
+            }, 2000);
+        } catch (err) {
+            console.error("Error details:", err);
+            // setError(err.message || "An unexpected error occurred.");
+        } finally {
+            setLoading(false);
+        }
     }
 
     const handleReturnToDashboard = () => {
@@ -124,7 +123,7 @@ const CreateRequest = () => {
                                 isRequired
                             />
                             <FormInput
-                                name="jobDesctiption"
+                                name="jobDescription"
                                 label="Job Description"
                                 placeholder=""
                                 description="What does this job entail?"
@@ -166,12 +165,36 @@ const CreateRequest = () => {
                                 isRequired
                             />
                             <FormInput
-                                name="jobDescription"
-                                label="Education Requirement"
+                                name="skills"
+                                label="Requried Skills"
                                 form={form}
-                                description="What is the requirement for education?"
-                                placeholder="B.S In Mechanical Engineering"
+                                description="What are some skills that are requried for this job?"
+                                placeholder="C++/Javascript"
                                 isRequired
+                            />
+                            <FormInput
+                                name="companyName"
+                                label="Company Name"
+                                form={form}
+                                description="What is the name of the employer?"
+                                placeholder="Example Company"
+                                isRequired
+                            />
+                            <FormInput
+                                name="jobType"
+                                label="Job Type"
+                                form={form}
+                                description=""
+                                placeholder="Example Company"
+                                isRequired={false}
+                            />
+                            <FormInput
+                                name="roleLocation"
+                                label="Role Location"
+                                form={form}
+                                description="Where is the role located"
+                                placeholder="Chicago, Illinois"
+                                isRequired={false}
                             />
                             <p
                                 className={cn("text-danger fill-danger", error ? "" : "hidden")}
