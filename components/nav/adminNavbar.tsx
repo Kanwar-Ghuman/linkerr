@@ -6,10 +6,7 @@ import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 export async function AdminNavbar({ user }: AdminNavbarProps) {
   console.log("Current user data:", user);
 
-  const menuItems: MenuItem[] = [
-    { label: "Home", link: "/admin/dashboard" },
-    { label: "Company Reviews", link: "/admin/company-reviews" },
-  ];
+  const menuItems: MenuItem[] = [{ label: "Home", link: "/admin/dashboard" }];
 
   const profile: ProfileItem[] = [
     {
