@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -15,7 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, Settings } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Page = () => {
   // States for collapsing each filter section
@@ -24,13 +31,51 @@ const Page = () => {
   const [openJobType, setOpenJobType] = useState(true);
   const [openSalaryRange, setOpenSalaryRange] = useState(true);
   const [openDatePosted, setOpenDatePosted] = useState(true);
+  const [openSettings, setOpenSettings] = useState(false);
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-100 to-white">
       <div className="h-screen flex flex-col pt-5">
         {/* Top Bar aligned with cards */}
-        <div className="flex w-full px-4">
-          <div className="w-1/3" /> {/* Spacer matching filter width */}
+        <div className="flex w-full">
+          <div className="w-1/5 p-8">
+            {" "}
+            {/* Adjusted padding to match filter section */}
+            <DropdownMenu>
+              <DropdownMenuTrigger className="w-full bg-white rounded-lg p-4 shadow-sm border border-gray-200 flex items-center gap-2 cursor-pointer hover:bg-gray-50">
+                <Settings className="h-5 w-5" />
+                <span className="font-medium">Settings</span>
+                {openSettings ? (
+                  <ChevronUp className="ml-auto h-5 w-5" />
+                ) : (
+                  <ChevronDown className="ml-auto h-5 w-5" />
+                )}
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-[200px]">
+                <DropdownMenuItem
+                  onClick={() => {
+                    /* Close all filters logic */
+                  }}
+                >
+                  Close All Filters
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    /* Open all filters logic */
+                  }}
+                >
+                  Open All Filters
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    /* Clear all filters logic */
+                  }}
+                >
+                  Clear All Filters
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
           <div className="flex-1 flex justify-center">
             <div className="flex gap-2 items-center w-[90%]">
               <Input
@@ -54,7 +99,7 @@ const Page = () => {
         {/* Main Content: Left filters + Right results */}
         <div className="flex flex-1 h-[calc(100vh-100px)]">
           {/* Left Column with 5 collapsible filter sections */}
-          <div className="w-1/3 p-8 border-r space-y-8 overflow-auto">
+          <div className="w-1/4 p-8 border-r space-y-8 overflow-auto">
             {/* 1) Job Category */}
             <div className="space-y-2 bg-white rounded-lg p-4 shadow-sm border border-gray-200">
               <div
@@ -186,7 +231,7 @@ const Page = () => {
           </div>
 
           {/* Right Column: Results */}
-          <div className="w-2/3 p-8 overflow-auto">
+          <div className="w-full p-8 overflow-auto">
             <div className="space-y-4">
               {[1, 2, 3].map((item) => (
                 <Card key={item} className="p-6 min-h-[300px]">
