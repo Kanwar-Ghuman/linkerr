@@ -16,7 +16,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, ChevronUp, Settings } from "lucide-react";
+import { ChevronDown, ChevronUp, Settings, X, Eye, Trash2 } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,44 +40,47 @@ const Page = () => {
         {/* Top Bar aligned with cards */}
         <div className="flex w-full">
           <div className="w-1/5 p-8">
-            {" "}
-            {/* Adjusted padding to match filter section */}
-            <DropdownMenu>
-              <DropdownMenuTrigger className="w-full bg-white rounded-lg p-4 shadow-sm border border-gray-200 flex items-center gap-2 cursor-pointer hover:bg-gray-50">
-                <Settings className="h-5 w-5" />
-                <span className="font-medium">Settings</span>
-                {openSettings ? (
-                  <ChevronUp className="ml-auto h-5 w-5" />
-                ) : (
-                  <ChevronDown className="ml-auto h-5 w-5" />
-                )}
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-[200px]">
-                <DropdownMenuItem
-                  onClick={() => {
-                    /* Close all filters logic */
-                  }}
-                >
-                  Close All Filters
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    /* Open all filters logic */
-                  }}
-                >
-                  Open All Filters
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    /* Clear all filters logic */
-                  }}
-                >
-                  Clear All Filters
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {/* Settings Section */}
+            <div className="space-y-2 bg-gradient-to-r from-amber-200 to-amber-100 rounded-lg p-4 shadow-sm border border-gray-200">
+              <div
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => setOpenSettings(!openSettings)}
+              >
+                <div className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  <h3 className="text-lg font-semibold">Settings</h3>
+                </div>
+                {openSettings ? <ChevronUp /> : <ChevronDown />}
+              </div>
+              {openSettings && (
+                <div className="mt-2  rounded-lg  z-10 max-h-[200px] overflow-y-auto">
+                  <div className="pl-4 space-y-2 pt-3 p-5">
+                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span>Close All Filters</span>
+                        <X className="w-5 h-5" />
+                      </div>
+                    </div>
+                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span>Open All Filters</span>
+                        <Eye className="w-5 h-5" />
+                      </div>
+                    </div>
+                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                      <div className="flex items-center justify-between">
+                        <span>Clear All Filters</span>
+                        <Trash2 className="w-5 h-5" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex-1 flex justify-center">
+
+          {/* Search Bar - Fixed Position */}
+          <div className="flex-1 flex justify-center fixed-content">
             <div className="flex gap-2 items-center w-[90%]">
               <Input
                 type="text"
