@@ -115,7 +115,7 @@ export function BaseNavbar({
                 href={item.link}
                 aria-current={routerUrl === item.link ? "page" : undefined}
                 color={routerUrl === item.link ? "primary" : "foreground"}
-                className="text-gray-700 hover:text-gray-900"
+                className="text-gray-700 hover:text-gray-900 justify-end"
               >
                 {item.label}
               </Link>
