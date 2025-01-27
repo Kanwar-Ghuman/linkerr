@@ -4,10 +4,7 @@ import { BaseNavbar } from "./baseNavbar";
 import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 
 export async function EmployerNavbar({ user }: AdminNavbarProps) {
-  const menuItems: MenuItem[] = [
-    { label: "Home", link: "/student/dashboard" },
-    { label: "Company Reviews", link: "/student/reviews" },
-  ];
+  const menuItems: MenuItem[] = [];
 
   const profile: ProfileItem[] = [
     {
