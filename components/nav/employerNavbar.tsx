@@ -19,8 +19,15 @@ export interface BaseNavbarProps {
 export async function EmployerNavbar({ user }: AdminNavbarProps) {
   const menuItems: MenuItem[] = [
     {
+      key: "Home",
+      label: "Home",
+      className: "flex justify-end",
+      link: "/employer/dashboard",
+    },
+    {
       key: "post-job",
       label: "Post Job",
+
       className: "flex justify-end",
 
       link: "/employer/create",
