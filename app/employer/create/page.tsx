@@ -136,7 +136,7 @@ const CreateRequest = () => {
                       name="jobTitle"
                       label="Job Title"
                       placeholder="Software Engineer Intern"
-                      description=""
+                      description="What position are you hiring for?"
                       form={form}
                       isRequired
                     />
@@ -147,7 +147,7 @@ const CreateRequest = () => {
                       name="roleLocation"
                       label="Location"
                       placeholder="San Francisco, CA"
-                      description=""
+                      description="Where is this position located?"
                       form={form}
                       isRequired
                     />
@@ -170,7 +170,7 @@ const CreateRequest = () => {
                       name="pay"
                       label="Pay"
                       placeholder="Enter expected salary"
-                      description=""
+                      description="What is the expected compensation?"
                       form={form}
                       isRequired
                     />
