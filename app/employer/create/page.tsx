@@ -200,17 +200,6 @@ const CreateRequest = () => {
                   />
                 </div>
 
-                <div className="space-y-4">
-                  <FormInput
-                    name="education"
-                    label="Education Requirement"
-                    form={form}
-                    description="What is the requirement for education?"
-                    placeholder="B.S In Mechanical Engineering"
-                    isRequired
-                  />
-                </div>
-
                 <FormDropDownInput
                   name="remote"
                   label="Attendance"
