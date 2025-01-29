@@ -74,13 +74,6 @@ const CreateRequest = () => {
       const responseData = await response.json();
       console.log("API response:", responseData);
 
-      // await fetch("/api/admin/auto-match", {
-      //     method: "POST",
-      //     headers: {
-      //         "Content-Type": "application/json",
-      //     },
-      // });
-
       setSuccess(true);
       setSubmittedData(formattedData);
       form.reset(defaultValues);
@@ -91,7 +84,6 @@ const CreateRequest = () => {
       }, 2000);
     } catch (err) {
       console.error("Error details:", err);
-      // setError(err.message || "An unexpected error occurred.");
     } finally {
       setLoading(false);
     }
