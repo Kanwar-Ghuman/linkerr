@@ -88,7 +88,7 @@ export default function SignUpPage() {
         <div className="w-full h-[250px] md:h-screen md:w-1/2 mb-6 md:mb-0 md:absolute md:right-0">
           <Image
             src="/people.png"
-            alt="Right side image"
+            alt=""
             width={500}
             height={250}
             className="object-cover w-full h-full opacity-90"

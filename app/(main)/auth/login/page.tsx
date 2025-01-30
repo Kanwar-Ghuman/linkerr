@@ -85,7 +85,8 @@ export default function SignUpPage() {
             alt="People"
             width={500}
             height={250}
-            className="object-cover w-full h-full opacity-90"
+            className="object-contain opacity-100 z-10 h-full w-full"
+            loading="eager"
             priority
           />
         </div>
@@ -215,10 +216,10 @@ export default function SignUpPage() {
           <div className="flex justify-end h-screen">
             <Image
               src="/image.png"
-              alt="Right side image"
+              alt=""
               width={800}
               height={1000}
-              className="object-contain h-full"
+              className="object-contain h-full w-full"
               priority
             />
           </div>
