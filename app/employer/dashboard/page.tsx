@@ -16,7 +16,6 @@ const EmployerDashboard = () => {
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-50 to-white animate-gradient-xy">
       <div className="min-h-screen w-full">
         <main className="max-w-7xl mx-auto px-6 py-8">
-          {/* Stats Overview */}
           <div className="grid grid-cols-4 gap-6 mb-8">
             <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <div className="flex items-center gap-4">

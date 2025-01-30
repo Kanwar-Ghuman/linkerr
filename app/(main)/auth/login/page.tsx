@@ -78,13 +78,14 @@ export default function SignUpPage() {
           />
         </div>
 
-        <div className="md:hidden w-full h-[250px] bg-white mb-6">
+        {/* Image Section - Visible on both mobile and desktop */}
+        <div className="w-full h-[250px] md:h-screen md:w-1/2 mb-6 md:mb-0 md:absolute md:right-0">
           <Image
-            src="/pep.png"
-            alt="Right side image"
+            src="/people.png"
+            alt="People"
             width={500}
             height={250}
-            className="object-contain w-[500px] h-[250px]"
+            className="object-cover w-full h-full opacity-90"
             priority
           />
         </div>

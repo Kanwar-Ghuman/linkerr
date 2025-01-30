@@ -1,33 +1,17 @@
-import { getUserByEmail } from "@/actions/user";
-import bcryptjs from "bcryptjs";
 import type { NextAuthConfig } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { signInWithPasswordSchema } from "@/validations/auth";
+
+function getEnvVar(key: string): string {
+  const value = process.env[key];
+  if (!value) throw new Error(`Missing environment variable: ${key}`);
+  return value;
+}
 
 export default {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID,
-      clientSecret: process.env.GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-    CredentialsProvider({
-      async authorize(rawCredentials) {
-        const validatedCredentials =
-          signInWithPasswordSchema.safeParse(rawCredentials);
-        if (!validatedCredentials.success) return null;
-
-        const { email, password } = validatedCredentials.data;
-        const user = await getUserByEmail({ email });
-        if (!user?.passwordHash) return null;
-
-        const passwordIsValid = await bcryptjs.compare(
-          password,
-          user.passwordHash
-        );
-        return passwordIsValid ? user : null;
-      },
+      clientId: getEnvVar("GOOGLE_ID"),
+      clientSecret: getEnvVar("GOOGLE_SECRET"),
     }),
   ],
 } satisfies NextAuthConfig;
