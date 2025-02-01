@@ -77,7 +77,7 @@ export function getApp(user: any) {
     case "EMPLOYER":
       return "/employer/dashboard";
     case "STUDENT":
-      return "/student/dashboard";
+      return "/student/profile";
     default:
       return "/unauthorized";
   }

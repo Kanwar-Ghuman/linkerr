@@ -3,7 +3,15 @@
 
 import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Search, Building2, Users, Clock, Calendar } from "lucide-react";
+import {
+  Search,
+  Building2,
+  Users,
+  Clock,
+  Calendar,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Job {
   id: string;
@@ -172,22 +180,86 @@ const EmployerDashboard = () => {
               <div className="text-center py-8">No jobs found</div>
             ) : (
               jobs.map((job) => (
-                <div key={job.id}>
-                  <div className="flex items-center gap-2">
-                    <h3>{job.jobTitle}</h3>
-                    <span
-                      className={`px-2 py-1 rounded ${
-                        job.status === "PENDING"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : job.status === "APPROVED"
-                          ? "bg-green-100 text-green-600"
-                          : "bg-red-100 text-red-600"
-                      }`}
-                    >
-                      {job.status}
-                    </span>
+                <div
+                  key={job.id}
+                  className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-3">
+                      {/* Title and Status */}
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-xl font-semibold text-blue-600">
+                          {job.jobTitle}
+                        </h3>
+                        <span
+                          className={`px-2 py-1 text-sm rounded-full ${
+                            job.status === "PENDING"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : job.status === "APPROVED"
+                              ? "bg-green-100 text-green-600"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
+                          {job.status}
+                        </span>
+                      </div>
+
+                      {/* Company and Location */}
+                      <div className="flex items-center gap-4 text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Building2 className="h-4 w-4" />
+                          <span>{job.companyName}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          <span>{job.roleLocation}</span>
+                        </div>
+                      </div>
+
+                      {/* Job Type and Salary */}
+                      <div className="flex gap-4 text-sm">
+                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded">
+                          {job.remote}
+                        </span>
+                        <span className="px-2 py-1 bg-blue-100 text-blue-600 rounded">
+                          {job.pay}
+                        </span>
+                      </div>
+
+                      {/* Skills */}
+                      <div className="flex flex-wrap gap-2">
+                        {job.skills.map((skill) => (
+                          <span
+                            key={skill}
+                            className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
+                          >
+                            {skill}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Metadata */}
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>
+                          Posted: {new Date(job.createdAt).toLocaleDateString()}
+                        </span>
+                        <span>Applications: {job.totalApplications}</span>
+                      </div>
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex flex-col gap-2">
+                      <Button variant="outline">View Details</Button>
+                      {job.status === "APPROVED" && (
+                        <Button
+                          variant="outline"
+                          className="border-red-200 text-red-600 hover:bg-red-50"
+                        >
+                          Close Position
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                  {/* Other job details */}
                 </div>
               ))
             )}
