@@ -41,14 +41,10 @@ export const {
             clientSecret: process.env.GOOGLE_SECRET!,
         }),
     ],
-    session: { strategy: "jwt" },
-    pages: { signIn: "/signin" },
-
+    pages: { signIn: "/auth/login" },
     callbacks: {
-        async session({ session, token }) {
-            if (token.sub && session.user) {
-                session.user.id = token.sub;
-            }
+        session({ session, user }) {
+            session.user.role = user.role;
             return session;
         },
     },
