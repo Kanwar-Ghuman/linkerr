@@ -41,7 +41,7 @@ export const {
             clientSecret: process.env.GOOGLE_SECRET!,
         }),
     ],
-    pages: { signIn: "/auth/login" },
+    pages: { signIn: "/auth/signup" },
     callbacks: {
         session({ session, user }) {
             session.user.role = user.role;

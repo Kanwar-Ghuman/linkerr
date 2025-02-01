@@ -65,9 +65,7 @@ export default function SignUpPage() {
   const { toast } = useToast();
   async function handleGoogleSignIn() {
     try {
-      await signIn("google", {
-        callbackUrl: "/admin/dashboard",
-      });
+      await signIn("google");
     } catch (error) {
       toast({
         title: "Authentication Failed",
