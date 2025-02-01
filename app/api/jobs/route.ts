@@ -3,42 +3,53 @@ import { NextResponse } from "next/server";
 import { JobValidation } from "@/lib/forms/schemas";
 import { PrismaClient } from "@prisma/client";
 import { validateForm } from "@/validations/forms";
+import { auth } from "@/auth";
 
 const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
-  try {
-    const body = await request.json();
+    try {
+        const body = await request.json();
+        const session = await auth()
 
-    // Validate form data
-    const validation = validateForm(JobValidation, body);
-    if (!validation.isValid) return validation.error;
+        const employer = await prisma.employer.findUnique({
+            where: {
+                id: session?.user.id
+            }
+        })
 
-    const jobData = validation.data;
-    const remote = jobData.remote.toUpperCase();
+        console.log(employer)
 
-    const createdJob = await prisma.job.create({
-      data: {
-        jobTitle: jobData.jobTitle,
-        jobDescription: jobData.jobDescription,
-        jobType: jobData.jobType || null,
-        roleLocation: jobData.roleLocation || "",
-        companyName: jobData.companyName,
-        remote: remote as "REMOTE" | "ONSITE" | "HYBRID",
-        skills: jobData.skills,
-        pay: jobData.pay,
-        employerId: "SIMULATED_EMPLOYER_ID", // Replace with real auth
-      },
-    });
+        // Validate form data
+        const validation = validateForm(JobValidation, body);
+        if (!validation.isValid) return validation.error;
 
-    return NextResponse.json(createdJob, { status: 201 });
-  } catch (error) {
-    console.error("Error creating job:", error);
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
+        const jobData = validation.data;
+        const remote = jobData.remote.toUpperCase();
+
+        const createdJob = await prisma.job.create({
+            data: {
+                jobTitle: jobData.jobTitle,
+                jobDescription: jobData.jobDescription,
+                jobType: jobData.jobType || null,
+                roleLocation: jobData.roleLocation || "",
+                companyName: jobData.companyName,
+                remote: remote as "REMOTE" | "ONSITE" | "HYBRID",
+                skills: jobData.skills,
+                pay: jobData.pay,
+                employer,
+                employerId: session?.user.id, // Replace with real auth
+            },
+        });
+
+        return NextResponse.json(createdJob, { status: 201 });
+    } catch (error) {
+        console.error("Error creating job:", error);
+        return NextResponse.json(
+            { error: "Internal Server Error" },
+            { status: 500 }
+        );
+    }
 }
 
 export async function GET(request: Request) {

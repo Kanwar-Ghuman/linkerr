@@ -46,7 +46,6 @@ const CreateRequest = () => {
     remote: JobTypeEnum.remote,
     skills: [],
     pay: "0.0",
-    education: [],
   };
 
   const form = useForm({ defaultValues, resolver: zodResolver(JobValidation) });
@@ -197,23 +196,13 @@ const CreateRequest = () => {
                   isRequired
                 />
 
-                <label htmlFor="skills">Skills</label>
-                <Select
-                  isMulti
-                  options={skillOptions}
-                  value={selectedSkills}
-                  onChange={(newValue) => {
-                    const selected = newValue
-                      ? (newValue as { value: string; label: string }[])
-                      : [];
-                    setSelectedSkills(selected);
-                    // update form value if using react-hook-form
-                    form.setValue(
-                      "skills",
-                      selected.map((skill) => skill.value)
-                    );
-                  }}
-                  placeholder="Select skills..."
+                <FormInput
+                  name="skills"
+                  label="Skills"
+                  form={form}
+                  description="Please enter the skills required"
+                  placeholder="NodeJs"
+                  isRequired={false}
                 />
                 <FormInput
                   name="jobType"
