@@ -19,23 +19,11 @@ export async function POST(request: Request) {
         const validation = validateForm(StudentProfileSchema, body);
         if (!validation.isValid) return validation.error;
 
-        const updatedStudent = await prisma.student.upsert({
+        const updatedStudent = await prisma.student.update({
             where: {
                 userId: session.user.id,
             },
-            update: {
-                major: validation.data.major,
-                university: validation.data.university,
-                gradYear: validation.data.gradYear,
-                skills: validation.data.skills,
-                resume: validation.data.resume,
-            },
-            create: {
-                user: {
-                    connect: {
-                        id: session.user.id,
-                    },
-                },
+            data: {
                 major: validation.data.major,
                 university: validation.data.university,
                 gradYear: validation.data.gradYear,
