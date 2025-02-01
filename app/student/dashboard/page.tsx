@@ -41,33 +41,39 @@ const Page = () => {
         <div className="flex w-full">
           <div className="w-1/5 p-8">
             {/* Settings Section */}
-            <div className="space-y-2 bg-gradient-to-r from-amber-200 to-amber-100 rounded-lg p-4 shadow-sm border border-gray-200">
+            <div className="space-y-2 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 shadow-sm border border-gray-200">
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenSettings(!openSettings)}
               >
                 <div className="flex items-center gap-2">
-                  <Settings className="h-5 w-5" />
-                  <h3 className="text-lg font-thin">Settings</h3>
+                  <Settings className="h-5 w-5 text-indigo-600" />
+                  <h3 className="text-lg font-medium text-gray-800">
+                    Settings
+                  </h3>
                 </div>
-                {openSettings ? <ChevronUp /> : <ChevronDown />}
+                {openSettings ? (
+                  <ChevronUp className="text-gray-600" />
+                ) : (
+                  <ChevronDown className="text-gray-600" />
+                )}
               </div>
               {openSettings && (
-                <div className="mt-2  rounded-lg  z-10 max-h-[200px] overflow-y-auto">
+                <div className="mt-2 rounded-lg z-10 max-h-[200px] overflow-y-auto">
                   <div className="pl-4 space-y-2 pt-3 p-5">
-                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                    <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-3 rounded-md border border-indigo-700 cursor-pointer text-white transition-all duration-200 hover:shadow-md hover:from-indigo-700 hover:to-blue-700">
                       <div className="flex items-center justify-between">
                         <span>Close All Filters</span>
                         <X className="w-5 h-5" />
                       </div>
                     </div>
-                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                    <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-3 rounded-md border border-indigo-700 cursor-pointer text-white transition-all duration-200 hover:shadow-md hover:from-indigo-700 hover:to-blue-700">
                       <div className="flex items-center justify-between">
                         <span>Open All Filters</span>
                         <Eye className="w-5 h-5" />
                       </div>
                     </div>
-                    <div className="bg-[#5971FF] p-3 rounded-md border border-gray-200 cursor-pointer text-white transition-colors">
+                    <div className="bg-gradient-to-r from-indigo-600 to-blue-600 p-3 rounded-md border border-indigo-700 cursor-pointer text-white transition-all duration-200 hover:shadow-md hover:from-indigo-700 hover:to-blue-700">
                       <div className="flex items-center justify-between">
                         <span>Clear All Filters</span>
                         <Trash2 className="w-5 h-5" />
@@ -102,10 +108,13 @@ const Page = () => {
 
         {/* Main Content: Left filters + Right results */}
         <div className="flex flex-1 h-[calc(100vh-100px)]">
-          {/* Left Column with 5 collapsible filter sections */}
-          <div className="w-1/4 p-8 border-r space-y-8 overflow-auto">
-            {/* 1) Job Category */}
-            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
+          {/* Left Column with filters */}
+          <div className="w-1/4 p-8 border-r border-gray-200 space-y-4 overflow-auto">
+            {/* Job Category */}
+            <div
+              className="space-y-2 bg-gradient-to-br from-blue-50 via-sky-50/40 to-white 
+                    rounded-lg p-4 shadow-sm border border-gray-200"
+            >
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenCategory(!openCategory)}
@@ -131,8 +140,11 @@ const Page = () => {
               )}
             </div>
 
-            {/* 2) Location */}
-            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
+            {/* Location */}
+            <div
+              className="space-y-2 bg-gradient-to-br from-blue-50 via-sky-50/40 to-white 
+                    rounded-lg p-4 shadow-sm border border-gray-200"
+            >
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenLocation(!openLocation)}
@@ -159,31 +171,22 @@ const Page = () => {
               )}
             </div>
 
-            {/* 3) Job Type */}
-            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
-              <div
-                className="flex items-center justify-between cursor-pointer"
-                onClick={() => setOpenJobType(!openJobType)}
-              >
-                <h3 className="text-lg font-thin">Job Type</h3>
-                {openJobType ? <ChevronUp /> : <ChevronDown />}
+            {/* Experience */}
+            <div
+              className="space-y-2 bg-gradient-to-br from-blue-50 via-sky-50/40 to-white 
+                    rounded-lg p-4 shadow-sm border border-gray-200"
+            >
+              <div className="flex items-center justify-between cursor-pointer">
+                <h3 className="text-lg font-thin">Experience</h3>
+                <ChevronDown />
               </div>
-              {openJobType && (
-                <div className="pl-4 space-y-2 pt-2">
-                  {["Full-Time", "Part-Time", "Internship", "Contract"].map(
-                    (type) => (
-                      <div key={type} className="flex items-center space-x-2">
-                        <Checkbox id={type} />
-                        <Label htmlFor={type}>{type}</Label>
-                      </div>
-                    )
-                  )}
-                </div>
-              )}
             </div>
 
-            {/* 4) Salary Range */}
-            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
+            {/* Salary */}
+            <div
+              className="space-y-2 bg-gradient-to-br from-blue-50 via-sky-50/40 to-white 
+                    rounded-lg p-4 shadow-sm border border-gray-200"
+            >
               <div
                 className="flex items-center justify-between cursor-pointer"
                 onClick={() => setOpenSalaryRange(!openSalaryRange)}
@@ -201,34 +204,28 @@ const Page = () => {
               )}
             </div>
 
-            {/* 5) Date Posted */}
-            <div className="space-y-2 bg-[#5971FF] rounded-lg p-4 shadow-sm border border-gray-200">
+            {/* Job Type */}
+            <div
+              className="space-y-2 bg-gradient-to-br from-blue-50 via-sky-50/40 to-white 
+                    rounded-lg p-4 shadow-sm border border-gray-200"
+            >
               <div
                 className="flex items-center justify-between cursor-pointer"
-                onClick={() => setOpenDatePosted(!openDatePosted)}
+                onClick={() => setOpenJobType(!openJobType)}
               >
-                <h3 className="text-lg font-thin">Date Posted</h3>
-                {openDatePosted ? <ChevronUp /> : <ChevronDown />}
+                <h3 className="text-lg font-thin">Job Type</h3>
+                {openJobType ? <ChevronUp /> : <ChevronDown />}
               </div>
-              {openDatePosted && (
-                <div className="pl-4 pt-2">
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select timeframe" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {[
-                        "Last 24 hours",
-                        "Last week",
-                        "Last month",
-                        "Any time",
-                      ].map((timeframe) => (
-                        <SelectItem key={timeframe} value={timeframe}>
-                          {timeframe}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+              {openJobType && (
+                <div className="pl-4 space-y-2 pt-2">
+                  {["Full-Time", "Part-Time", "Internship", "Contract"].map(
+                    (type) => (
+                      <div key={type} className="flex items-center space-x-2">
+                        <Checkbox id={type} />
+                        <Label htmlFor={type}>{type}</Label>
+                      </div>
+                    )
+                  )}
                 </div>
               )}
             </div>
