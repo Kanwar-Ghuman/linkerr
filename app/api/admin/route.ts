@@ -31,7 +31,7 @@ export async function GET() {
       skills: job.skills,
       status: job.status,
       postedDate: job.createdAt,
-      applications: job.applications.length,
+      applications: job.applications.length, // This is a number, not an array
     }));
 
     return NextResponse.json({ jobs: formattedJobs });

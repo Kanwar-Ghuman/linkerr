@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, Building2, Users, Clock, Calendar } from "lucide-react";
 
@@ -173,55 +172,22 @@ const EmployerDashboard = () => {
               <div className="text-center py-8">No jobs found</div>
             ) : (
               jobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-                >
-                  <div className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <h3 className="text-xl font-semibold text-blue-600">
-                            {job.jobTitle}
-                          </h3>
-                          <span
-                            className={`px-2 py-1 ${
-                              job.status === "APPROVED"
-                                ? "bg-green-100 text-green-700"
-                                : job.status === "PENDING"
-                                ? "bg-yellow-100 text-yellow-700"
-                                : job.status === "REJECTED"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-gray-100 text-gray-700"
-                            } text-sm rounded-full`}
-                          >
-                            {job.status.charAt(0) +
-                              job.status.slice(1).toLowerCase()}
-                          </span>
-                        </div>
-                        <p className="text-gray-600 flex items-center gap-1">
-                          <Building2 size={16} /> {job.companyName}
-                        </p>
-                        <p className="text-sm text-gray-500">
-                          ${job.pay} • {job.remote}
-                        </p>
-                        <div className="flex gap-4 text-sm text-gray-600">
-                          <span className="flex items-center gap-1">
-                            <Users size={16} /> {job.totalApplications}{" "}
-                            Applications
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock size={16} /> Posted{" "}
-                            {new Date(job.createdAt).toLocaleDateString()}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button variant="outline">View Applications</Button>
-                        <Button variant="outline">Edit</Button>
-                      </div>
-                    </div>
+                <div key={job.id}>
+                  <div className="flex items-center gap-2">
+                    <h3>{job.jobTitle}</h3>
+                    <span
+                      className={`px-2 py-1 rounded ${
+                        job.status === "PENDING"
+                          ? "bg-yellow-100 text-yellow-600"
+                          : job.status === "APPROVED"
+                          ? "bg-green-100 text-green-600"
+                          : "bg-red-100 text-red-600"
+                      }`}
+                    >
+                      {job.status}
+                    </span>
                   </div>
+                  {/* Other job details */}
                 </div>
               ))
             )}

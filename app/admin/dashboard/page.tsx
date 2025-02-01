@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Building2, Filter } from "lucide-react";
+import { JobStatus } from "@prisma/client";
 
-interface Job {
+interface FormattedJob {
   id: string;
   title: string;
   company: string;
@@ -13,14 +15,14 @@ interface Job {
   salary: string;
   type: string;
   skills: string[];
-  status: string;
-  postedDate: string;
+  status: JobStatus;
+  postedDate: string | Date;
   applications: number;
 }
 
 const AdminDashboard = () => {
-  const [filteredJobs, setJobs] = useState<Job[]>([]);
-  const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [filteredJobs, setJobs] = useState<FormattedJob[]>([]);
+  const [allJobs, setAllJobs] = useState<FormattedJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
@@ -30,6 +32,7 @@ const AdminDashboard = () => {
       try {
         const response = await fetch("/api/admin");
         const data = await response.json();
+        // data.jobs should be an array of FormattedJob objects
         setJobs(data.jobs);
         setAllJobs(data.jobs);
       } catch (error) {
@@ -78,23 +81,37 @@ const AdminDashboard = () => {
     setJobs(filtered);
   };
 
-  const handleApproval = async (
-    jobId: string,
-    status: "APPROVED" | "REJECTED"
-  ) => {
+  const handleApproval = async (jobId: string, status: JobStatus) => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/jobs/${jobId}/approve`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
 
-      if (response.ok) {
-        // Refresh jobs list
-        fetchJobs();
+      if (!response.ok) {
+        throw new Error("Failed to update job status");
       }
+
+      await response.json();
+
+      // Update both local states (filteredJobs and allJobs)
+      setJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job.id === jobId ? { ...job, status: status } : job
+        )
+      );
+      setAllJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job.id === jobId ? { ...job, status: status } : job
+        )
+      );
     } catch (error) {
       console.error("Error updating job status:", error);
+      alert("Failed to update job status");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,7 +166,7 @@ const AdminDashboard = () => {
             ) : filteredJobs.length === 0 ? (
               <div className="text-center py-8">No jobs found</div>
             ) : (
-              filteredJobs.map((job) => (
+              filteredJobs.map((job: FormattedJob) => (
                 <div
                   key={job.id}
                   className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm"
@@ -168,7 +185,7 @@ const AdminDashboard = () => {
                         <p className="text-gray-700">{job.salary}</p>
                         <div className="flex gap-2">
                           <span className="px-2 py-1 bg-blue-100 text-blue-600 text-sm rounded">
-                            {job.type}
+                            {job.type || "Full Time"}
                           </span>
                           {job.skills.map((skill) => (
                             <span
@@ -203,16 +220,16 @@ const AdminDashboard = () => {
                   </div>
                   <div className="flex gap-2 mt-4">
                     <Button
-                      onClick={() => handleApproval(job.id, "APPROVED")}
+                      onClick={() => handleApproval(job.id, JobStatus.APPROVED)}
                       className="bg-green-500 hover:bg-green-600"
-                      disabled={job.status === "APPROVED"}
+                      disabled={job.status === JobStatus.APPROVED}
                     >
                       Approve
                     </Button>
                     <Button
-                      onClick={() => handleApproval(job.id, "REJECTED")}
+                      onClick={() => handleApproval(job.id, JobStatus.REJECTED)}
                       className="bg-red-500 hover:bg-red-600"
-                      disabled={job.status === "REJECTED"}
+                      disabled={job.status === JobStatus.REJECTED}
                     >
                       Reject
                     </Button>
@@ -239,6 +256,3 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
-function fetchJobs() {
-  throw new Error("Function not implemented.");
-}
