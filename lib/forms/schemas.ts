@@ -73,3 +73,13 @@ export interface Job {
   pay: string;
   education: string[];
 }
+
+export const StudentProfileSchema = z.object({
+  major: z.string().optional(),
+  university: z.string().optional(),
+  gradYear: z.number().optional(),
+  skills: z.array(z.string()).default([]),
+  resume: z.string().optional(),
+});
+
+export type StudentProfileType = z.infer<typeof StudentProfileSchema>;

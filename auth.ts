@@ -4,13 +4,12 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
-const adminEmailList = [
-  "ghumankm@gmail.com",
-  "rohanpeddmallu@gmail.com",
+const adminEmailList = ["ghumankm@gmail.com", "rohanpeddmallu@gmail.com"];
+
+const employerEmailList = [
+  "kanwarmehtab.ghuman@franklinsabers.org",
   "heyanantraj@gmail.com",
 ];
-
-const employerEmailList = ["kanwarmehtab.ghuman@franklinsabers.org"];
 
 const studentsEmailList = ["mcdabg1236@gmail.com"];
 
