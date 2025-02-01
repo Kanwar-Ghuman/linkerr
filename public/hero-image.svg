@@ -1,0 +1,17 @@
+<!-- public/hero-image.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+  <rect width="600" height="400" fill="none" />
+  <!-- Horizontal guide lines -->
+  <line x1="50" y1="80" x2="550" y2="80" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <line x1="50" y1="160" x2="550" y2="160" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <line x1="50" y1="240" x2="550" y2="240" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <!-- Network nodes -->
+  <circle cx="150" cy="200" r="30" fill="#FFFFFF" />
+  <circle cx="300" cy="120" r="30" fill="#FFFFFF" />
+  <circle cx="450" cy="200" r="30" fill="#FFFFFF" />
+  <!-- Connecting lines -->
+  <line x1="150" y1="200" x2="300" y2="120" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <line x1="300" y1="120" x2="450" y2="200" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+  <line x1="150" y1="200" x2="450" y2="200" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" />
+</svg>
+

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
@@ -8,10 +9,15 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
+
 import { useToast } from "@/hooks/use-toast";
 
+import { getApp } from "@/lib/auth/roles";
 import { RoleSelector } from "@/components/home/RoleSelector";
+
+import { redirect, useRouter } from "next/navigation";
+import { auth } from "@/auth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -42,6 +48,8 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
 
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,30 +63,17 @@ export default function SignUpPage() {
     console.log(values);
   }
   const { toast } = useToast();
-
-  async function handleOAuthSignIn(provider: "google") {
-    if (!selectedRole) {
-      toast({
-        title: "Please select a role",
-        description: "You must select a role before signing up",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  async function handleGoogleSignIn() {
     try {
-      await signIn(provider, {
+      await signIn("google", {
         callbackUrl: "/admin/dashboard",
-        role: selectedRole,
       });
-      toast({ title: "Success!", description: "You are now signed in" });
     } catch (error) {
       toast({
-        title: "Something went wrong",
+        title: "Authentication Failed",
         description: "Please try again",
         variant: "destructive",
       });
-      console.error(error);
     }
   }
 
@@ -96,13 +91,13 @@ export default function SignUpPage() {
           />
         </div>
 
-        <div className="md:hidden w-full h-[250px] bg-white mb-6">
+        <div className="w-full h-[250px] md:h-screen md:w-1/2 mb-6 md:mb-0 md:absolute md:right-0">
           <Image
             src="/people.png"
-            alt="Right side image"
+            alt=""
             width={500}
             height={250}
-            className="object-contain w-full h-full"
+            className="object-cover w-full h-full opacity-90"
             priority
           />
         </div>
@@ -232,10 +227,9 @@ export default function SignUpPage() {
                   </Button>
                   <Button
                     type="button"
-                    onClick={() => handleOAuthSignIn("google")}
+                    onClick={handleGoogleSignIn}
                     variant="outline"
                     className="w-full md:w-[400px] h-[40px] md:h-[50px]"
-                    onClick={() => void handleOAuthSignIn("google")}
                   >
                     <Image
                       src="/google.png"
@@ -261,19 +255,6 @@ export default function SignUpPage() {
                 </div>
               </form>
             </Form>
-          </div>
-        </div>
-
-        <div className="hidden md:block md:w-1/2 bg-[#A2B0FF]">
-          <div className="flex justify-end h-screen">
-            <Image
-              src="/image.png"
-              alt="Right side image"
-              width={800}
-              height={1000}
-              className="object-contain h-full"
-              priority
-            />
           </div>
         </div>
       </div>

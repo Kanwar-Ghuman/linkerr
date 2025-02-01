@@ -1,0 +1,8 @@
+<!-- public/step3.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Left hand curve -->
+  <path d="M12,40 Q24,20 36,40" fill="none" stroke="#A2B0FF" stroke-width="4" stroke-linecap="round"/>
+  <!-- Right hand curve -->
+  <path d="M52,40 Q40,20 28,40" fill="none" stroke="#A2B0FF" stroke-width="4" stroke-linecap="round"/>
+</svg>
+
