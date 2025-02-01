@@ -1,60 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-import { StudentProfileSchema } from "@/lib/forms/schemas";
-import { auth } from "@/auth";
-import { validateForm } from "@/validations/forms";
-
-const prisma = new PrismaClient();
-
-export async function POST(request: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const body = await request.json();
-
-    // Use helper function for validation
-    const validation = validateForm(StudentProfileSchema, body);
-    if (!validation.isValid) return validation.error;
-
-    const updatedStudent = await prisma.student.upsert({
-      where: {
-        userId: session.user.id,
-      },
-      update: {
-        major: validation.data.major,
-        university: validation.data.university,
-        gradYear: validation.data.gradYear,
-        skills: validation.data.skills,
-        resume: validation.data.resume,
-      },
-      create: {
-        user: {
-          connect: {
-            id: session.user.id,
-          },
-        },
-        major: validation.data.major,
-        university: validation.data.university,
-        gradYear: validation.data.gradYear,
-        skills: validation.data.skills,
-        resume: validation.data.resume,
-      },
-    });
-
-    return NextResponse.json(updatedStudent, { status: 200 });
-  } catch (error) {
-    console.error("Profile update error:", error);
-    return NextResponse.json(
-      { error: "Failed to update profile" },
-      { status: 500 }
-    );
-  }
-}
-
 export async function GET() {
   try {
     const session = await auth();
@@ -62,6 +5,18 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
+    // First get the student record
+    const student = await prisma.student.findFirst({
+      where: {
+        userId: session.user.id,
+      },
+    });
+
+    if (!student) {
+      return new NextResponse("Student not found", { status: 404 });
+    }
+
+    // Then get all approved jobs with application status
     const jobs = await prisma.job.findMany({
       where: {
         status: "APPROVED",
@@ -69,14 +24,17 @@ export async function GET() {
       include: {
         applications: {
           where: {
-            studentId: session.user.id,
+            studentId: student.id, // Use actual student.id instead of session.user.id
           },
         },
+        employer: true, // Include employer details
       },
       orderBy: {
         createdAt: "desc",
       },
     });
+
+    console.log("Found jobs:", jobs.length); // Debug log
 
     const formattedJobs = jobs.map((job) => ({
       id: job.id,
@@ -90,10 +48,12 @@ export async function GET() {
       remote: job.remote,
       hasApplied: job.applications.length > 0,
       createdAt: job.createdAt,
+      employer: job.employer,
     }));
 
     return NextResponse.json({ jobs: formattedJobs });
   } catch (error) {
+    console.error("Student jobs fetch error:", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

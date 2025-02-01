@@ -41,6 +41,7 @@ export const {
       clientSecret: process.env.GOOGLE_SECRET!,
     }),
   ],
+
   session: { strategy: "jwt" },
   pages: { signIn: "/signin" },
 
