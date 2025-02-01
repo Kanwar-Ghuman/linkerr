@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { StudentProfileSchema } from "@/lib/forms/schemas";
@@ -51,5 +52,48 @@ export async function POST(request: Request) {
       { error: "Failed to update profile" },
       { status: 500 }
     );
+  }
+}
+
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+
+    const jobs = await prisma.job.findMany({
+      where: {
+        status: "APPROVED",
+      },
+      include: {
+        applications: {
+          where: {
+            studentId: session.user.id,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    const formattedJobs = jobs.map((job) => ({
+      id: job.id,
+      title: job.jobTitle,
+      company: job.companyName,
+      location: job.roleLocation,
+      salary: job.pay,
+      type: job.jobType || "Full-time",
+      skills: job.skills,
+      description: job.jobDescription,
+      remote: job.remote,
+      hasApplied: job.applications.length > 0,
+      createdAt: job.createdAt,
+    }));
+
+    return NextResponse.json({ jobs: formattedJobs });
+  } catch (error) {
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

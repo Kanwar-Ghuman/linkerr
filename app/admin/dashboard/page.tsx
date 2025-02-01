@@ -1,60 +1,83 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, MapPin, Building2, Filter } from "lucide-react";
 
-const jobListings = [
-  {
-    id: 1,
-    title: "Senior React Developer",
-    company: "Tech Corp Inc",
-    location: "San Francisco, CA",
-    salary: "$130,000 - $160,000",
-    type: "Full-time",
-    skills: ["React", "TypeScript", "Node.js"],
-    status: "Active",
-    postedDate: "2024-03-01",
-    applications: 45,
-  },
-  {
-    id: 2,
-    title: "Python Backend Engineer",
-    company: "Data Systems Co",
-    location: "New York, NY",
-    salary: "$115,000 - $140,000",
-    type: "Remote",
-    skills: ["Python", "Django", "AWS"],
-    status: "Active",
-    postedDate: "2024-03-05",
-    applications: 32,
-  },
-  {
-    id: 3,
-    title: "DevOps Engineer",
-    company: "Cloud Solutions Ltd",
-    location: "Austin, TX",
-    salary: "$125,000 - $155,000",
-    type: "Hybrid",
-    skills: ["Kubernetes", "Docker", "CI/CD"],
-    status: "Urgent",
-    postedDate: "2024-03-10",
-    applications: 28,
-  },
-  {
-    id: 4,
-    title: "Mobile Developer",
-    company: "App Innovators",
-    location: "Seattle, WA",
-    salary: "$110,000 - $135,000",
-    type: "Full-time",
-    skills: ["React Native", "iOS", "Android"],
-    status: "Active",
-    postedDate: "2024-03-08",
-    applications: 37,
-  },
-];
+interface Job {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  salary: string;
+  type: string;
+  skills: string[];
+  status: string;
+  postedDate: string;
+  applications: number;
+}
 
 const AdminDashboard = () => {
+  const [filteredJobs, setJobs] = useState<Job[]>([]);
+  const [allJobs, setAllJobs] = useState<Job[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
+
+  useEffect(() => {
+    const fetchJobs = async () => {
+      try {
+        const response = await fetch("/api/admin");
+        const data = await response.json();
+        setJobs(data.jobs);
+        setAllJobs(data.jobs);
+      } catch (error) {
+        console.error("Error fetching jobs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
+  }, []);
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+    filterJobs(term, locationFilter);
+  };
+
+  const handleLocationFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const location = e.target.value.toLowerCase();
+    setLocationFilter(location);
+    filterJobs(searchTerm, location);
+  };
+
+  const filterJobs = (search: string, location: string) => {
+    let filtered = [...allJobs];
+
+    // Apply location filter first
+    if (location) {
+      filtered = filtered.filter((job) =>
+        job.location.toLowerCase().includes(location)
+      );
+    }
+
+    // Then apply search term filter
+    if (search) {
+      filtered = filtered.filter(
+        (job) =>
+          job.title.toLowerCase().includes(search) ||
+          job.company.toLowerCase().includes(search) ||
+          job.type.toLowerCase().includes(search) ||
+          job.skills.some((skill) => skill.toLowerCase().includes(search))
+      );
+    }
+
+    setJobs(filtered);
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-50 to-white animate-gradient-xy">
       <div className="min-h-screen w-full">
@@ -68,6 +91,8 @@ const AdminDashboard = () => {
                   type="text"
                   placeholder="Search jobs..."
                   className="pl-10 py-6 text-lg w-full"
+                  value={searchTerm}
+                  onChange={handleSearch}
                 />
               </div>
               <div className="flex-1 relative">
@@ -76,9 +101,11 @@ const AdminDashboard = () => {
                   type="text"
                   placeholder="Location"
                   className="pl-10 py-6 text-lg w-full"
+                  value={locationFilter}
+                  onChange={handleLocationFilter}
                 />
               </div>
-              <Button className="px-6 bg-blue-600 hover:bg-blue-700">
+              <Button className="px-6 mt-2 bg-blue-600 hover:bg-blue-700">
                 Search Jobs
               </Button>
             </div>
@@ -97,57 +124,66 @@ const AdminDashboard = () => {
 
           {/* Job Listings */}
           <div className="grid grid-cols-1 gap-6">
-            {jobListings.map((job) => (
-              <div
-                key={job.id}
-                className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm"
-              >
-                <div className="flex justify-between items-start">
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-semibold text-blue-600 hover:underline">
-                      {job.title}
-                    </h3>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Building2 size={16} />
-                      <p>{job.company}</p>
-                    </div>
-                    <p className="text-gray-600">{job.location}</p>
+            {loading ? (
+              <div className="text-center py-8">Loading...</div>
+            ) : filteredJobs.length === 0 ? (
+              <div className="text-center py-8">No jobs found</div>
+            ) : (
+              filteredJobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-white/80 backdrop-blur-sm p-6 rounded-lg shadow-sm"
+                >
+                  <div className="flex justify-between items-start">
                     <div className="space-y-2">
-                      <p className="text-gray-700">{job.salary}</p>
-                      <div className="flex gap-2">
-                        <span className="px-2 py-1 bg-blue-100 text-blue-600 text-sm rounded">
-                          {job.type}
-                        </span>
-                        {job.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
-                          >
-                            {skill}
+                      <h3 className="text-xl font-semibold text-blue-600 hover:underline">
+                        {job.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-gray-600">
+                        <Building2 size={16} />
+                        <p>{job.company}</p>
+                      </div>
+                      <p className="text-gray-600">{job.location}</p>
+                      <div className="space-y-2">
+                        <p className="text-gray-700">{job.salary}</p>
+                        <div className="flex gap-2">
+                          <span className="px-2 py-1 bg-blue-100 text-blue-600 text-sm rounded">
+                            {job.type}
                           </span>
-                        ))}
+                          {job.skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
+                            >
+                              {skill}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                        <span>
+                          Posted:{" "}
+                          {new Date(job.postedDate).toLocaleDateString()}
+                        </span>
+                        <span>Applications: {job.applications}</span>
+                        <span
+                          className={`px-2 py-1 rounded ${
+                            job.status === "PENDING"
+                              ? "bg-yellow-100 text-yellow-600"
+                              : job.status === "APPROVED"
+                              ? "bg-green-100 text-green-600"
+                              : "bg-red-100 text-red-600"
+                          }`}
+                        >
+                          {job.status}
+                        </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span>
-                        Posted: {new Date(job.postedDate).toLocaleDateString()}
-                      </span>
-                      <span>Applications: {job.applications}</span>
-                      <span
-                        className={`px-2 py-1 rounded ${
-                          job.status === "Urgent"
-                            ? "bg-red-100 text-red-600"
-                            : "bg-green-100 text-green-600"
-                        }`}
-                      >
-                        {job.status}
-                      </span>
-                    </div>
+                    <Button variant="outline">View Details</Button>
                   </div>
-                  <Button variant="outline">View Details</Button>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           {/* Pagination */}

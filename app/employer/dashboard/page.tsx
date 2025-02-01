@@ -1,17 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Search,
-  Building2,
-  Filter,
-  Users,
-  Clock,
-  Calendar,
-  ChevronDown,
-} from "lucide-react";
+import { Search, Building2, Users, Clock, Calendar } from "lucide-react";
 
 interface Job {
   id: string;
@@ -30,6 +23,8 @@ interface Job {
 const EmployerDashboard = () => {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [allJobs, setAllJobs] = useState<Job[]>([]); // Store all jobs
   const [stats, setStats] = useState({
     activeApplications: 0,
     activePostings: 0,
@@ -43,13 +38,15 @@ const EmployerDashboard = () => {
         const response = await fetch("/api/jobs");
         const data = await response.json();
         setJobs(data.jobs);
+        setAllJobs(data.jobs); // Store all jobs
 
         // Calculate stats
         const activeJobs = data.jobs.filter(
-          (j) => j.status === "APPROVED"
+          (j: { status: string }) => j.status === "APPROVED"
         ).length;
         const totalApplications = data.jobs.reduce(
-          (acc, job) => acc + job.totalApplications,
+          (acc: any, job: { totalApplications: any }) =>
+            acc + job.totalApplications,
           0
         );
 
@@ -57,8 +54,9 @@ const EmployerDashboard = () => {
           activeApplications: totalApplications,
           activePostings: activeJobs,
           avgTimeToHire: 18, // You can calculate this based on your data
-          positionsFilled: data.jobs.filter((j) => j.status === "CLOSED")
-            .length,
+          positionsFilled: data.jobs.filter(
+            (j: { status: string }) => j.status === "CLOSED"
+          ).length,
         });
       } catch (error) {
         console.error("Error fetching jobs:", error);
@@ -69,6 +67,27 @@ const EmployerDashboard = () => {
 
     fetchJobs();
   }, []);
+
+  // Handle search
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    if (term === "") {
+      setJobs(allJobs);
+    } else {
+      const filteredJobs = allJobs.filter((job) => {
+        const titleMatch = job.jobTitle?.toLowerCase().includes(term) || false;
+        const companyMatch =
+          job.companyName?.toLowerCase().includes(term) || false;
+        const descriptionMatch =
+          job.jobDescription?.toLowerCase().includes(term) || false;
+
+        return titleMatch || companyMatch || descriptionMatch;
+      });
+      setJobs(filteredJobs);
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-50 to-white animate-gradient-xy">
@@ -133,11 +152,11 @@ const EmployerDashboard = () => {
                   type="text"
                   placeholder="Search job postings..."
                   className="pl-10 py-6 text-lg w-full"
+                  value={searchTerm}
+                  onChange={handleSearch}
                 />
               </div>
-              <Button variant="outline" className="flex items-center gap-2">
-                <Filter size={16} /> Filters <ChevronDown size={16} />
-              </Button>
+
               <select className="px-4 py-2 border rounded-md">
                 <option>Most Recent</option>
                 <option>Most Applications</option>
@@ -180,7 +199,9 @@ const EmployerDashboard = () => {
                               job.status.slice(1).toLowerCase()}
                           </span>
                         </div>
-                        <p className="text-gray-600">{job.companyName}</p>
+                        <p className="text-gray-600 flex items-center gap-1">
+                          <Building2 size={16} /> {job.companyName}
+                        </p>
                         <p className="text-sm text-gray-500">
                           ${job.pay} • {job.remote}
                         </p>
