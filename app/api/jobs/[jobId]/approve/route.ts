@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/auth";
@@ -10,13 +11,8 @@ export async function PATCH(
 ) {
   try {
     const session = await auth();
-    if (!session?.user) {
+    if (!session?.user || session.user.role !== "ADMIN") {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Verify user is admin
-    if (session.user.role !== "ADMIN") {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     const body = await request.json();
@@ -26,30 +22,16 @@ export async function PATCH(
       return NextResponse.json({ error: "Invalid status" }, { status: 400 });
     }
 
-    // Get admin record
-    const admin = await prisma.admin.findUnique({
-      where: { userId: session.user.id },
-    });
-
-    if (!admin) {
-      return NextResponse.json(
-        { error: "Admin record not found" },
-        { status: 404 }
-      );
-    }
-
-    // Update job status
     const updatedJob = await prisma.job.update({
       where: { id: params.jobId },
       data: {
         status: status as "APPROVED" | "REJECTED",
-        adminId: admin.id, // Track who approved/rejected
+        adminId: session.user.id,
       },
     });
 
-    return NextResponse.json(updatedJob, { status: 200 });
+    return NextResponse.json(updatedJob);
   } catch (error) {
-    console.error("Job status update error:", error);
     return NextResponse.json(
       { error: "Failed to update job status" },
       { status: 500 }

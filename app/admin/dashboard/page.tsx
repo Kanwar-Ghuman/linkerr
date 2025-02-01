@@ -78,6 +78,26 @@ const AdminDashboard = () => {
     setJobs(filtered);
   };
 
+  const handleApproval = async (
+    jobId: string,
+    status: "APPROVED" | "REJECTED"
+  ) => {
+    try {
+      const response = await fetch(`/api/jobs/${jobId}/approve`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+
+      if (response.ok) {
+        // Refresh jobs list
+        fetchJobs();
+      }
+    } catch (error) {
+      console.error("Error updating job status:", error);
+    }
+  };
+
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-100 via-blue-50 to-white animate-gradient-xy">
       <div className="min-h-screen w-full">
@@ -181,6 +201,22 @@ const AdminDashboard = () => {
                     </div>
                     <Button variant="outline">View Details</Button>
                   </div>
+                  <div className="flex gap-2 mt-4">
+                    <Button
+                      onClick={() => handleApproval(job.id, "APPROVED")}
+                      className="bg-green-500 hover:bg-green-600"
+                      disabled={job.status === "APPROVED"}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      onClick={() => handleApproval(job.id, "REJECTED")}
+                      className="bg-red-500 hover:bg-red-600"
+                      disabled={job.status === "REJECTED"}
+                    >
+                      Reject
+                    </Button>
+                  </div>
                 </div>
               ))
             )}
@@ -203,3 +239,6 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+function fetchJobs() {
+  throw new Error("Function not implemented.");
+}
