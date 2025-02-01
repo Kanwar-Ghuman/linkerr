@@ -1,0 +1,11 @@
+<!-- public/step1.svg -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- User circle -->
+  <circle cx="24" cy="24" r="12" fill="none" stroke="#A2B0FF" stroke-width="4"/>
+  <!-- Shoulders -->
+  <path d="M12 50c0-8 24-8 24 0" fill="none" stroke="#A2B0FF" stroke-width="4" stroke-linecap="round"/>
+  <!-- Plus sign -->
+  <line x1="48" y1="24" x2="60" y2="24" stroke="#A2B0FF" stroke-width="4" stroke-linecap="round"/>
+  <line x1="54" y1="20" x2="54" y2="28" stroke="#A2B0FF" stroke-width="4" stroke-linecap="round"/>
+</svg>
+
