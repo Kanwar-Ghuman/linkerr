@@ -1,6 +1,9 @@
 import { Role } from "@prisma/client";
 
 declare module "next-auth" {
+  interface NextAuthOptions {
+    allowDangerousEmailAccountLinking?: boolean;
+  }
   interface User {
     role?: Role;
   }

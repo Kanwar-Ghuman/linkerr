@@ -9,10 +9,15 @@ import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { User, Mail, Lock, Eye, EyeOff } from "lucide-react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
+
 import { useToast } from "@/hooks/use-toast";
 
+import { getApp } from "@/lib/auth/roles";
 import { RoleSelector } from "@/components/home/RoleSelector";
+
+import { redirect, useRouter } from "next/navigation";
+import { auth } from "@/auth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -43,6 +48,8 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState<UserRole | null>(null);
 
+  const router = useRouter();
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,7 +63,6 @@ export default function SignUpPage() {
     console.log(values);
   }
   const { toast } = useToast();
-
   async function handleGoogleSignIn() {
     try {
       await signIn("google", {

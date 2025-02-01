@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { useState } from "react";
@@ -22,6 +23,18 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { JobValidation, JobTypeEnum, Job } from "@/lib/forms/schemas";
 import { BsExclamationCircle } from "react-icons/bs";
+import dynamic from "next/dynamic";
+
+const Select = dynamic(() => import("react-select"), { ssr: false });
+
+// Example definition of skill options
+const skillOptions = [
+  { value: "javascript", label: "JavaScript" },
+  { value: "typescript", label: "TypeScript" },
+  { value: "react", label: "React" },
+  { value: "node", label: "Node.js" },
+  // ...more options
+];
 
 const CreateRequest = () => {
   const defaultValues: Job = {
@@ -36,61 +49,36 @@ const CreateRequest = () => {
     education: [],
   };
 
-  const form = useForm({
-    resolver: zodResolver(JobValidation),
-    defaultValues,
-  });
-
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState("");
-  const [submittedData, setSubmittedData] = useState<Job>(defaultValues);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const form = useForm({ defaultValues, resolver: zodResolver(JobValidation) });
   const router = useRouter();
+  // State to track react-select skills value
+  const [selectedSkills, setSelectedSkills] = useState<
+    { value: string; label: string }[]
+  >([]);
 
-  async function onSubmit(data: Job) {
-    setLoading(true);
-    setError("");
+  const onSubmit = async (data: Job) => {
+    console.log("Submitting data:", data);
     try {
-      const formattedData = {
-        ...data,
-      };
-      console.log("Formatted data:", formattedData);
-
       const response = await fetch("/api/jobs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formattedData),
+        body: JSON.stringify(data),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("API error:", errorData);
-        throw new Error(errorData.message || "Request failed");
+        console.error("Error creating job:", errorData);
+        return;
       }
 
-      const responseData = await response.json();
-      console.log("API response:", responseData);
-
-      setSuccess(true);
-      setSubmittedData(formattedData);
-      form.reset(defaultValues);
-      onOpen();
-
-      setTimeout(() => {
-        setSuccess(false);
-      }, 2000);
-    } catch (err) {
-      console.error("Error details:", err);
-    } finally {
-      setLoading(false);
+      const result = await response.json();
+      console.log("Job created successfully:", result);
+      router.push("/employer/dashboard");
+    } catch (error) {
+      console.error("Submission error:", error);
     }
-  }
-
-  const handleReturnToDashboard = () => {
-    router.push("/employer/dashboard");
   };
 
   return (
@@ -208,13 +196,24 @@ const CreateRequest = () => {
                   description="What is the preference for attendance?"
                   isRequired
                 />
-                <FormInput
-                  name="skills"
-                  label="Requried Skills"
-                  form={form}
-                  description="What are some skills that are requried for this job?"
-                  placeholder="C++/Javascript"
-                  isRequired
+
+                <label htmlFor="skills">Skills</label>
+                <Select
+                  isMulti
+                  options={skillOptions}
+                  value={selectedSkills}
+                  onChange={(newValue) => {
+                    const selected = newValue
+                      ? (newValue as { value: string; label: string }[])
+                      : [];
+                    setSelectedSkills(selected);
+                    // update form value if using react-hook-form
+                    form.setValue(
+                      "skills",
+                      selected.map((skill) => skill.value)
+                    );
+                  }}
+                  placeholder="Select skills..."
                 />
                 <FormInput
                   name="jobType"
@@ -224,15 +223,6 @@ const CreateRequest = () => {
                   placeholder="Example Company"
                   isRequired={false}
                 />
-                <p
-                  className={cn(
-                    "text-danger fill-danger",
-                    error ? "" : "hidden"
-                  )}
-                >
-                  <BsExclamationCircle />
-                  <span>{error}</span>
-                </p>
               </div>
 
               {/* Submit Button */}
@@ -241,80 +231,13 @@ const CreateRequest = () => {
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02]"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Please wait
-                    </>
-                  ) : success ? (
-                    "Success"
-                  ) : (
-                    "Submit"
-                  )}
+                  Submit
                 </Button>
               </div>
             </form>
           </Form>
         </div>
       </div>
-
-      {/* Enhanced Success Modal */}
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        isDismissable={false}
-        isKeyboardDismissDisabled={true}
-      >
-        <ModalContent className="bg-white rounded-xl shadow-xl p-8">
-          {() => (
-            <>
-              <ModalHeader className="flex flex-col items-center text-center pb-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <div className="w-8 h-8 text-green-600">✓</div>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900">
-                  Job Posted Successfully!
-                </h3>
-              </ModalHeader>
-
-              <ModalBody className="py-6">
-                {submittedData && (
-                  <div className="space-y-4">
-                    <div className="bg-gray-50 p-6 rounded-lg space-y-4">
-                      <p>
-                        <strong>Job Title:</strong> {submittedData.jobTitle}
-                      </p>
-                      <p>
-                        <strong>CompanyName:</strong>{" "}
-                        {submittedData.companyName}
-                      </p>
-                      <p>
-                        <strong>Pay:</strong> {submittedData.pay.toString()}
-                      </p>
-                      <p>
-                        <strong>Education:</strong> {submittedData.education}
-                      </p>
-                      <p>
-                        <strong>Location:</strong> {submittedData.roleLocation}
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </ModalBody>
-
-              <ModalFooter className="flex justify-center pt-4">
-                <NextUIButton
-                  color="primary"
-                  onPress={handleReturnToDashboard}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02]"
-                >
-                  Return to Dashboard
-                </NextUIButton>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 };

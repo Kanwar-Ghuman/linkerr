@@ -1,53 +1,41 @@
-// import { prisma } from "@/config/db";
-// import { JobValidation } from "@/lib/forms/schemas";
-// import { Prisma } from "@prisma/client";
-// import { NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { JobValidation } from "@/lib/forms/schemas";
+import { PrismaClient } from "@prisma/client";
+import { validateForm } from "@/validations/forms";
 
-// export async function POST(
-//     req: Request,
-// ) {
-//     try {
-//         const body = await req.json()
+const prisma = new PrismaClient();
 
-//         const parseResult = JobValidation.safeParse(body);
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
 
-//         if (!parseResult.success) {
-//             return NextResponse.json(
-//                 { error: "Invalid request data." },
-//                 { status: 405 },
-//             )
-//         }
+    // Validate form data
+    const validation = validateForm(JobValidation, body);
+    if (!validation.isValid) return validation.error;
 
-//         console.log(parseResult)
+    const jobData = validation.data;
+    const remote = jobData.remote.toUpperCase();
 
-//         const {
-//             jobTitle,
-//             jobDescription,
-//             jobType,
-//             companyName,
+    const createdJob = await prisma.job.create({
+      data: {
+        jobTitle: jobData.jobTitle,
+        jobDescription: jobData.jobDescription,
+        jobType: jobData.jobType || null,
+        roleLocation: jobData.roleLocation || "",
+        companyName: jobData.companyName,
+        remote: remote as "REMOTE" | "ONSITE" | "HYBRID",
+        skills: jobData.skills,
+        pay: jobData.pay,
+        employerId: "SIMULATED_EMPLOYER_ID", // Replace with real auth
+      },
+    });
 
-//             skills,
-
-//         } = parseResult.data;
-
-//         const newJob = await prisma.job.create({
-//             data: {
-//                 jobTitle,
-//                 jobDescription,
-//                 jobType,
-//                 companyName,
-//                 skills,
-//             },
-//         });
-
-//         return NextResponse.json(
-//             { data: newJob },
-//             { status: 200 }
-//         )
-//     } catch (error) {
-//         return NextResponse.json(
-//             { details: String(error) },
-//             { status: 500 }
-//         )
-//     }
-// }
+    return NextResponse.json(createdJob, { status: 201 });
+  } catch (error) {
+    console.error("Error creating job:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
