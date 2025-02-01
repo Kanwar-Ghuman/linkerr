@@ -12,14 +12,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const session = await auth();
 
-    const employer = await prisma.employer.findUnique({
-      where: {
-        id: session?.user.id,
-      },
-    });
-
-    console.log(employer);
-
     // Validate form data
     const validation = validateForm(JobValidation, body);
     if (!validation.isValid) return validation.error;
@@ -37,7 +29,11 @@ export async function POST(request: Request) {
         remote: remote as "REMOTE" | "ONSITE" | "HYBRID",
         skills: jobData.skills,
         pay: jobData.pay,
-        employerId: session?.user.id, // Replace with real auth
+        employer: {
+          connect: {
+            userId: session?.user.id, // Make sure employer is not null
+          },
+        },
       },
     });
 
