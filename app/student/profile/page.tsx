@@ -4,48 +4,42 @@
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { FormInput } from "@/components/linkerr/inputs/FormInput";
-import { FormDropDownInput } from "@/components/linkerr/inputs/FormDropDownInput";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { JobValidation, JobTypeEnum, Job } from "@/lib/forms/schemas";
+import { StudentProfileType as Student, StudentProfileSchema } from "@/lib/forms/schemas";
 
 const CreateProfile = () => {
-    const defaultValues: Job = {
-        jobTitle: "",
-        jobDescription: "",
-        jobType: "",
-        roleLocation: "",
-        companyName: "",
-        remote: JobTypeEnum.remote,
-        skills: [],
-        pay: "0.0",
+    const defaultValues: Student = {
+        major: "",
+        university: "",
+        gradYear: 2024, // Default graduation year; adjust as needed
+        skills: "",
+        resume: "",
     };
 
-    const form = useForm({ defaultValues, resolver: zodResolver(JobValidation) });
+    const form = useForm({ defaultValues, resolver: zodResolver(StudentProfileSchema) });
     const router = useRouter();
 
-    const onSubmit = async (data: Job) => {
-        console.log("Submitting data:", data);
+    const onSubmit = async (data: Student) => {
+        console.log("Submitting student profile:", data);
         try {
-            const response = await fetch("/api/jobs", {
+            const response = await fetch("/api/student", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(data),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error("Error creating job:", errorData);
+                console.error("Error creating student profile:", errorData);
                 return;
             }
 
             const result = await response.json();
-            console.log("Job created successfully:", result);
-            router.push("/employer/dashboard");
+            console.log("Student profile created successfully:", result);
+            router.push("/student/dashboard");
         } catch (error) {
             console.error("Submission error:", error);
         }
@@ -57,10 +51,10 @@ const CreateProfile = () => {
                 {/* Header */}
                 <div className="text-center mb-10">
                     <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                        Create Job Posting
+                        Create Student Profile
                     </h1>
                     <p className="text-gray-600">
-                        Post a new opportunity and find the perfect candidate
+                        Set up your profile and let employers find you
                     </p>
                 </div>
 
@@ -68,121 +62,89 @@ const CreateProfile = () => {
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-8">
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                            {/* Section: Basic Details */}
+                            {/* Section: Basic Information */}
                             <div className="space-y-6">
                                 <div className="border-b pb-3">
                                     <h2 className="text-xl font-semibold text-gray-800">
-                                        Basic Details
+                                        Basic Information
                                     </h2>
                                     <p className="text-sm text-gray-500 mt-1">
-                                        Enter the fundamental job information
+                                        Enter your academic and personal details
                                     </p>
                                 </div>
 
                                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                                    {/* First Row */}
+                                    {/* Major */}
                                     <div className="space-y-4">
                                         <FormInput
-                                            name="jobTitle"
-                                            label="Job Title"
-                                            placeholder="Software Engineer Intern"
-                                            description="What position are you hiring for?"
+                                            name="major"
+                                            label="Major"
+                                            placeholder="Computer Science"
+                                            description="What is your major?"
                                             form={form}
                                             isRequired
                                         />
                                     </div>
 
+                                    {/* University */}
                                     <div className="space-y-4">
                                         <FormInput
-                                            name="roleLocation"
-                                            label="Location"
-                                            placeholder="San Francisco, CA"
-                                            description="Where is this position located?"
+                                            name="university"
+                                            label="University"
+                                            placeholder="University Name"
+                                            description="Where do you study?"
                                             form={form}
                                             isRequired
                                         />
                                     </div>
 
-                                    {/* Second Row */}
+                                    {/* Graduation Year */}
                                     <div className="space-y-4">
                                         <FormInput
-                                            name="companyName"
-                                            label="Company Name"
+                                            name="gradYear"
+                                            label="Graduation Year"
+                                            placeholder="2024"
+                                            description="What year are you graduating?"
                                             form={form}
-                                            description="What is the name of the employer?"
-                                            placeholder="Example Company"
                                             isRequired
                                         />
                                     </div>
 
+                                    {/* Skills */}
                                     <div className="space-y-4">
                                         <FormInput
-                                            name="pay"
-                                            label="Pay"
-                                            placeholder="Enter expected salary"
-                                            description="What is the expected compensation?"
+                                            name="skills"
+                                            label="Skills"
+                                            placeholder="e.g., JavaScript, React, Node.js"
+                                            description="List your skills (/ separated)"
                                             form={form}
-                                            isRequired
+                                            isRequired={false}
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Section: Job Description */}
+                            {/* Section: Resume */}
                             <div className="space-y-6 pt-6">
                                 <div className="border-b pb-3">
                                     <h2 className="text-xl font-semibold text-gray-800">
-                                        Job Description
+                                        Resume
                                     </h2>
                                     <p className="text-sm text-gray-500 mt-1">
-                                        Provide detailed information about the role
+                                        Provide a link to your resume
                                     </p>
                                 </div>
 
                                 <div className="space-y-4">
                                     <FormInput
-                                        name="jobDescription"
-                                        label="Job Description"
-                                        placeholder=""
-                                        description="What does this job entail?"
+                                        name="resume"
+                                        label="Resume URL"
+                                        placeholder="https://example.com/resume.pdf"
+                                        description="Enter the URL of your resume"
                                         form={form}
-                                        isRequired
+                                        isRequired={false}
                                     />
                                 </div>
-
-                                <FormDropDownInput
-                                    name="remote"
-                                    label="Attendance"
-                                    options={[
-                                        {
-                                            group: [
-                                                { value: "remote", label: "Remote" },
-                                                { value: "onsite", label: "In-Person" },
-                                                { value: "hybrid", label: "Hybrid" },
-                                            ],
-                                        },
-                                    ]}
-                                    form={form}
-                                    description="What is the preference for attendance?"
-                                    isRequired
-                                />
-
-                                <FormInput
-                                    name="skills"
-                                    label="Skills"
-                                    form={form}
-                                    description="Please enter the skills required"
-                                    placeholder="NodeJs"
-                                    isRequired={false}
-                                />
-                                <FormInput
-                                    name="jobType"
-                                    label="Job Type"
-                                    form={form}
-                                    description=""
-                                    placeholder="Example Company"
-                                    isRequired={false}
-                                />
                             </div>
 
                             {/* Submit Button */}
@@ -191,7 +153,7 @@ const CreateProfile = () => {
                                     type="submit"
                                     className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02]"
                                 >
-                                    Submit
+                                    Submit Profile
                                 </Button>
                             </div>
                         </form>
