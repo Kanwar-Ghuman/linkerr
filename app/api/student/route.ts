@@ -29,10 +29,9 @@ export async function GET() {
 
     console.log("Found student:", student.id);
 
-    // Modified query to get only approved jobs
     const jobs = await prisma.job.findMany({
       where: {
-        status: "APPROVED", // Only show approved jobs
+        status: "APPROVED",
       },
       include: {
         applications: {

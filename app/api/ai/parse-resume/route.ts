@@ -15,7 +15,7 @@ function truncateText(text: string): string {
   );
 
   // Join sections and limit to ~4000 chars (~1000 tokens)
-  return importantSections.join("\n\n").slice(0, 4000);
+  return importantSections.join("\n\n").slice(0, 4500);
 }
 
 export async function POST(request: Request) {
@@ -86,9 +86,8 @@ export async function POST(request: Request) {
             content: processedText,
           },
         ],
-        model: "gpt-4o", // Try using 3.5-turbo if gpt-4 has issues
-        max_tokens: 1000,
-        temperature: 0.7,
+        model: "gpt-4", // Try using 3.5-turbo if gpt-4 has issues
+        max_tokens: 1500,
       });
 
       const content = completion.choices[0]?.message?.content;
