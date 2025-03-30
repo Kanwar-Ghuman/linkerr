@@ -5,18 +5,21 @@ import { auth } from "@/auth";
 import { validateForm } from "@/validations/forms";
 
 const prisma = new PrismaClient();
-
 export async function GET() {
   try {
     const session = await auth();
     if (!session?.user) {
       console.log("No session found");
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        { jobs: [], error: "Unauthorized" },
+        { status: 401 }
+      );
     }
 
     console.log("Session user:", session.user.id);
 
-    const student = await prisma.student.findFirst({
+    // Find or create a student record if it doesn't exist
+    let student = await prisma.student.findFirst({
       where: {
         userId: session.user.id,
       },
@@ -24,11 +27,22 @@ export async function GET() {
 
     if (!student) {
       console.log("No student found for user:", session.user.id);
-      return NextResponse.json({ error: "Student not found" }, { status: 404 });
+      // Create a temporary student record instead of returning a 404
+      student = await prisma.student.create({
+        data: {
+          userId: session.user.id,
+          major: "",
+          university: "",
+          gradYear: 0,
+          resume: "",
+        },
+      });
+      console.log("Created new student record:", student.id);
     }
 
-    console.log("Found student:", student.id);
+    console.log("Found/created student:", student.id);
 
+    // Rest of the function remains the same...
     const jobs = await prisma.job.findMany({
       where: {
         status: "APPROVED",
@@ -51,13 +65,14 @@ export async function GET() {
     const formattedJobs = jobs.map((job) => ({
       id: job.id,
       title: job.jobTitle,
-      company: job.companyName,
-      location: job.roleLocation,
-      salary: job.pay,
+      company:
+        job.companyName || job.employer?.companyName || "Unknown Company",
+      location: job.roleLocation || "Remote",
+      salary: job.pay || 0,
       type: job.jobType || "Full-time",
-      skills: job.skills,
-      description: job.jobDescription,
-      remote: job.remote,
+      skills: Array.isArray(job.skills) ? job.skills : [],
+      description: job.jobDescription || "",
+      remote: job.remote || "No",
       hasApplied: job.applications.length > 0,
       createdAt: job.createdAt,
     }));
@@ -68,14 +83,13 @@ export async function GET() {
   } catch (error) {
     console.error("Jobs fetch error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch jobs" },
+      { jobs: [], error: "Failed to fetch jobs" },
       { status: 500 }
     );
   } finally {
     await prisma.$disconnect();
   }
 }
-
 export async function POST(request: Request) {
   try {
     const session = await auth();

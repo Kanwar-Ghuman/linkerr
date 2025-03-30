@@ -79,14 +79,14 @@ export async function POST(request: Request) {
               "keywordsMissing": ["string"]
             }
             
-            For currentScore, provide a whole number between 0-100 representing how strong the resume is.`,
+            For currentScore, provide a whole number between 0-100 representing how strong the resume is. make it kind  and give them at least 80%`,
           },
           {
             role: "user",
             content: processedText,
           },
         ],
-        model: "gpt-4", // Try using 3.5-turbo if gpt-4 has issues
+        model: "gpt-4",
         max_tokens: 1500,
       });
 

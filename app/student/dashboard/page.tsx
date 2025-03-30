@@ -31,21 +31,41 @@ export default function StudentDashboard() {
   useEffect(() => {
     const fetchJobs = async () => {
       try {
+        console.log("Fetching jobs...");
         const response = await fetch("/api/student/");
-        const data = await response.json();
 
-        // Add a check to make sure data.jobs exists before mapping
-        if (!data.jobs) {
-          console.error("API response missing jobs array:", data);
+        if (!response.ok) {
+          console.error(
+            "API returned an error:",
+            response.status,
+            response.statusText
+          );
+          // Try to get more information about the error
+          try {
+            const errorData = await response.json();
+            console.error("Error details:", errorData);
+          } catch (e) {
+            console.error("Could not parse error response");
+          }
+
           setJobs([]);
           setAllJobs([]);
           return;
         }
 
-        // Ensure all job objects have a skills array
-        const processedJobs = data.jobs.map((job: any) => ({
+        const data = await response.json();
+        console.log("API response data:", data);
+
+        // Always ensure data.jobs is an array
+        const jobsArray = Array.isArray(data.jobs) ? data.jobs : [];
+
+        const processedJobs = jobsArray.map((job: any) => ({
           ...job,
-          skills: job.skills || [], // Set empty array if skills is undefined
+          skills: Array.isArray(job.skills) ? job.skills : [],
+          salary: typeof job.salary === "number" ? job.salary : 0,
+          location: job.location || "Remote",
+          type: job.type || "Full-time",
+          remote: job.remote || "No",
         }));
 
         setJobs(processedJobs);
