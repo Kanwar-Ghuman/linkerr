@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -13,7 +14,7 @@ interface Job {
   location: string;
   salary: number;
   type: string;
-  skills: string[];
+  skills: string[]; // Sometimes this might be undefined
   description: string;
   remote: string;
   hasApplied: boolean;
@@ -32,10 +33,27 @@ export default function StudentDashboard() {
       try {
         const response = await fetch("/api/student/");
         const data = await response.json();
-        setJobs(data.jobs);
-        setAllJobs(data.jobs);
+
+        // Add a check to make sure data.jobs exists before mapping
+        if (!data.jobs) {
+          console.error("API response missing jobs array:", data);
+          setJobs([]);
+          setAllJobs([]);
+          return;
+        }
+
+        // Ensure all job objects have a skills array
+        const processedJobs = data.jobs.map((job: any) => ({
+          ...job,
+          skills: job.skills || [], // Set empty array if skills is undefined
+        }));
+
+        setJobs(processedJobs);
+        setAllJobs(processedJobs);
       } catch (error) {
         console.error("Error fetching jobs:", error);
+        setJobs([]);
+        setAllJobs([]);
       } finally {
         setLoading(false);
       }
@@ -71,7 +89,9 @@ export default function StudentDashboard() {
           job.title.toLowerCase().includes(search) ||
           job.company.toLowerCase().includes(search) ||
           job.description.toLowerCase().includes(search) ||
-          job.skills.some((skill) => skill.toLowerCase().includes(search))
+          // Add null check for skills array
+          (job.skills &&
+            job.skills.some((skill) => skill.toLowerCase().includes(search)))
       );
     }
 
@@ -144,9 +164,10 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-1 gap-6">
           {loading ? (
             <div className="text-center py-8">Loading...</div>
-          ) : jobs.length === 0 ? (
+          ) : jobs && jobs.length === 0 ? (
             <div className="text-center py-8">No jobs found</div>
           ) : (
+            jobs &&
             jobs.map((job) => (
               <div
                 key={job.id}
@@ -164,7 +185,7 @@ export default function StudentDashboard() {
                     <p className="text-gray-600">{job.location}</p>
                     <div className="space-y-2">
                       <p className="text-gray-700">
-                        ${job.salary.toLocaleString()}
+                        ${job.salary?.toLocaleString() || "N/A"}
                       </p>
                       <div className="flex gap-2">
                         <span className="px-2 py-1 bg-blue-100 text-blue-600 text-sm rounded">
@@ -173,14 +194,15 @@ export default function StudentDashboard() {
                         <span className="px-2 py-1 bg-green-100 text-green-600 text-sm rounded">
                           {job.remote}
                         </span>
-                        {job.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
-                          >
-                            {skill}
-                          </span>
-                        ))}
+                        {job.skills &&
+                          job.skills.map((skill) => (
+                            <span
+                              key={skill}
+                              className="px-2 py-1 bg-gray-100 text-gray-600 text-sm rounded"
+                            >
+                              {skill}
+                            </span>
+                          ))}
                       </div>
                     </div>
                     <div className="flex items-center gap-4 text-sm text-gray-500">
