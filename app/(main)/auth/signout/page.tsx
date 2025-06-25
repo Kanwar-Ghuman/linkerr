@@ -1,5 +1,14 @@
-import SignOutClient from "./SignOutClient";
+import { redirect } from "next/navigation";
+import SignOutButton from "./signout";
+import { auth } from "@/auth";
 
-export default function SignOutPage() {
-  return <SignOutClient />;
+export default async function SignOutPage() {
+    const session = await auth();
+
+    if (!session) {
+        return redirect("/auth/login");
+    }
+
+    return <SignOutButton />;
 }
+

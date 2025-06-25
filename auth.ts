@@ -4,14 +4,22 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
-const adminEmailList = ["ghumankm@gmail.com", "rohanpeddmallu@gmail.com"];
+const adminEmailList = [
+  "ghumankm@gmail.com",
+  "rohanpeddmallu@gmail.com",
+  "clickclickity24@gmail.com",
+];
 
 const employerEmailList = [
   "kanwarmehtab.ghuman@franklinsabers.org",
   "heyanantraj@gmail.com",
 ];
 
-const studentsEmailList = ["mcdabg1236@gmail.com"];
+const studentsEmailList = [
+  "mcdabg1236@gmail.com",
+  "anant.raj@franklinsabers.org",
+  "r40577691@gmail.com",
+];
 
 export enum Role {
   ADMIN = "ADMIN",
@@ -41,14 +49,10 @@ export const {
       clientSecret: process.env.GOOGLE_SECRET!,
     }),
   ],
-  session: { strategy: "jwt" },
-  pages: { signIn: "/signin" },
-
+  pages: { signIn: "/auth/signup" },
   callbacks: {
-    async session({ session, token }) {
-      if (token.sub && session.user) {
-        session.user.id = token.sub;
-      }
+    session({ session, user }) {
+      session.user.role = user.role;
       return session;
     },
   },
@@ -65,13 +69,41 @@ export const {
         data: { role: user.role },
       });
 
-      if (user.role === "ADMIN" || user.role === "EMPLOYER") {
+      if (user.role === "EMPLOYER") {
         let employer = await prisma.employer.findUnique({
           where: { userId: user.id },
         });
         if (!employer) {
           await prisma.employer.create({
             data: { userId: user.id!, companyName: "" },
+          });
+        }
+      } else if (user.role === "ADMIN") {
+        let admin = await prisma.admin.findUnique({
+          where: {
+            userId: user.id,
+          },
+        });
+        if (!admin) {
+          await prisma.admin.create({
+            data: { user: { connect: { id: user.id } } },
+          });
+        }
+      } else {
+        let student = await prisma.student.findUnique({
+          where: {
+            userId: user.id,
+          },
+        });
+        if (!student) {
+          await prisma.student.create({
+            data: {
+              userId: user.id!,
+              major: "",
+              university: "",
+              gradYear: 0,
+              resume: "",
+            },
           });
         }
       }

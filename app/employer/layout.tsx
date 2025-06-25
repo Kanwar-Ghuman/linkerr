@@ -10,7 +10,7 @@ async function Layout({ children }: { children: ReactNode }) {
   const { isValid, user, error } = await isLoggedIn();
 
   if (!isValid || error || !user) {
-    redirect("/login");
+    redirect("/auth/login");
   }
 
   return (

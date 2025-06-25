@@ -215,7 +215,7 @@ const CreateRequest = () => {
               </div>
 
               {/* Submit Button */}
-              <div className="pt-6 border-t">
+              <div className="pt-6">
                 <Button
                   type="submit"
                   className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02]"

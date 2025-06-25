@@ -11,6 +11,9 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // Validate form data
     const validation = validateForm(JobValidation, body);
@@ -29,9 +32,10 @@ export async function POST(request: Request) {
         remote: remote as "REMOTE" | "ONSITE" | "HYBRID",
         skills: jobData.skills,
         pay: jobData.pay,
+        status: "PENDING", // All new jobs start as pending
         employer: {
           connect: {
-            userId: session?.user.id, // Make sure employer is not null
+            userId: session.user.id, // Make sure employer is not null
           },
         },
       },

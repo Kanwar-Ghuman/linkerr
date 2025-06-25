@@ -6,7 +6,12 @@ import { AdminNavbarProps, MenuItem, ProfileItem } from "../../types/navbar";
 export async function StudentNavbar({ user }: AdminNavbarProps) {
   const menuItems: MenuItem[] = [
     { label: "Home", link: "/student/dashboard" },
-    { label: "Company Reviews", link: "/student/reviews" },
+    { label: "LinkerrAI", link: "/student/reviews" },
+    {
+      label: "Edit Profile",
+
+      link: "/student/profile",
+    },
   ];
 
   const profile: ProfileItem[] = [

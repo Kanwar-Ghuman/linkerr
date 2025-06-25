@@ -34,24 +34,25 @@ export async function EmployerNavbar({ user }: AdminNavbarProps) {
     },
   ];
 
-  const profile: ProfileItem[] = [
-    {
-      key: "profile",
-      label: (
-        <>
-          <p className="font-semibold">Signed in as</p>
-          <p className="font-semibold">{user.email}</p>
-        </>
-      ),
-      className: "h-20 gap-2",
-      link: "/profile",
-    },
-  ];
+    const profile: ProfileItem[] = [
+        {
+            key: "profile",
+            label: (
+                <>
+                    <p className="font-semibold">Signed in as</p>
+                    <p className="font-semibold">{user?.email}</p>
+                </>
+            ),
+            className: "h-20  gap-2",
+            link: "/profile",
+        },
+        { key: "logout", label: "Log Out", color: "danger" },
+    ];
 
   return (
     <BaseNavbar
-      menuItems={menuItems}
-      profileItems={[[user.name, user.image], profile]}
+        menuItems={menuItems}
+        profileItems={[[user?.name || "", user?.image || ""], profile]} // Add fallbacks
     />
   );
 }

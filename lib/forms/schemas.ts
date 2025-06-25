@@ -76,11 +76,26 @@ export interface Job {
 }
 
 export const StudentProfileSchema = z.object({
-  major: z.string().optional(),
-  university: z.string().optional(),
-  gradYear: z.number().optional(),
-  skills: z.array(z.string()).default([]),
-  resume: z.string().optional(),
+    major: z.string().optional(),
+    university: z.string().optional(),
+    gradYear: z.number().optional(),
+    skills: z.preprocess(
+        (val) => {
+            if (typeof val === "string") {
+                return val.split("/")
+            }
+            return val
+        },
+        z.array(z.string().min(1, { message: "Skill entry cannot be empty." }))
+            .nonempty({ message: "'skills' must contain at least one skill." }),
+    ),
+    resume: z.string().optional(),
 });
 
-export type StudentProfileType = z.infer<typeof StudentProfileSchema>;
+export interface StudentProfileType {
+    major: string,
+    resume: string,
+    university: string,
+    skills: string,
+    gradYear: number
+}
