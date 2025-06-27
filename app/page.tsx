@@ -199,74 +199,136 @@ export default function Home() {
             >
               {/* First set of logos */}
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.next className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://ui.shadcn.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.shadCn className="h-10 w-auto text-black" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.neon className="h-12 w-auto text-green-500 opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.prisma className="h-10 w-auto text-[#2D3748] opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.authJs className="h-10 w-auto text-purple-600 opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.shadCn className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <img
-                  src="/openai.svg"
-                  alt="OpenAI"
-                  className="h-10 w-auto opacity-60 hover:opacity-100 transition-opacity"
-                />
+                <a 
+                  href="https://openai.com/api/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <img
+                    src="/openai.svg"
+                    alt="OpenAI"
+                    className="h-10 w-auto"
+                  />
+                </a>
               </div>
 
               {/* Second set of logos */}
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.next className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://nextjs.org/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.next className="h-10 w-auto text-black" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.neon className="h-12 w-auto text-green-500 opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://neon.tech/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.neon className="h-12 w-auto text-green-500" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.prisma className="h-10 w-auto text-[#2D3748] opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://www.prisma.io/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.prisma className="h-10 w-auto text-[#2D3748]" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.authJs className="h-10 w-auto text-purple-600 opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.shadCn className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
-              </div>
-              <div className="flex items-center justify-center min-w-[150px]">
-                <img
-                  src="/openai.svg"
-                  alt="OpenAI"
-                  className="h-10 w-auto opacity-60 hover:opacity-100 transition-opacity"
-                />
+                <a 
+                  href="https://authjs.dev/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.authJs className="h-10 w-auto text-purple-600" />
+                </a>
               </div>
 
               {/* Third set of logos */}
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.next className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://nextjs.org/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.next className="h-10 w-auto text-black" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.neon className="h-12 w-auto text-green-500 opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://neon.tech/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.neon className="h-12 w-auto text-green-500" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.prisma className="h-10 w-auto text-[#2D3748] opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://www.prisma.io/docs" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.prisma className="h-10 w-auto text-[#2D3748]" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.authJs className="h-10 w-auto text-purple-600 opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://authjs.dev/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.authJs className="h-10 w-auto text-purple-600" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <Icons.shadCn className="h-10 w-auto text-black opacity-60 hover:opacity-100 transition-opacity" />
+                <a 
+                  href="https://ui.shadcn.com/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <Icons.shadCn className="h-10 w-auto text-black" />
+                </a>
               </div>
               <div className="flex items-center justify-center min-w-[150px]">
-                <img
-                  src="/openai.svg"
-                  alt="OpenAI"
-                  className="h-10 w-auto opacity-60 hover:opacity-100 transition-opacity"
-                />
+                <a 
+                  href="https://openai.com/api/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="transition-opacity hover:opacity-100 opacity-60"
+                >
+                  <img
+                    src="/openai.svg"
+                    alt="OpenAI"
+                    className="h-10 w-auto"
+                  />
+                </a>
               </div>
             </motion.div>
           </div>
