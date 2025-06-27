@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Avatar,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -27,6 +26,14 @@ export function BaseNavbar({
 }: BaseNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const routerUrl = usePathname();
+
+  // Debug the profile items
+  if (Array.isArray(profileItems) && profileItems.length === 2) {
+    console.log("BaseNavbar - Profile name:", profileItems[0][0]);
+    console.log("BaseNavbar - Profile image URL:", profileItems[0][1]);
+    console.log("BaseNavbar - Image URL type:", typeof profileItems[0][1]);
+    console.log("BaseNavbar - Image URL length:", profileItems[0][1]?.length);
+  }
 
   return (
     <Navbar
@@ -97,15 +104,38 @@ export function BaseNavbar({
         {Array.isArray(profileItems) && profileItems.length === 2 ? (
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
-              <Avatar
-                isBordered
-                as="button"
-                className="transition-transform"
-                color="secondary"
-                name={profileItems[0][0]}
-                size="sm"
-                src={profileItems[0][1]}
-              />
+              <div className="flex items-center">
+                {profileItems[0][1] ? (
+                  <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
+                    <Image
+                      src={profileItems[0][1]}
+                      alt={profileItems[0][0] || "Profile"}
+                      fill
+                      className="object-cover"
+                      onError={(e) => {
+                        console.error(
+                          "Profile image failed to load:",
+                          profileItems[0][1]
+                        );
+                        // Hide the image on error
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    {/* Fallback avatar with initials */}
+                    <div className="absolute inset-0 bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+                      {profileItems[0][0]
+                        ? profileItems[0][0].charAt(0).toUpperCase()
+                        : "U"}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
+                    {profileItems[0][0]
+                      ? profileItems[0][0].charAt(0).toUpperCase()
+                      : "U"}
+                  </div>
+                )}
+              </div>
             </DropdownTrigger>
             <DropdownMenu
               aria-label="Dynamic Actions"

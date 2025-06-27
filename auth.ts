@@ -4,15 +4,12 @@ import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
-const adminEmailList = [
-  "ghumankm@gmail.com",
-  "rohanpeddmallu@gmail.com",
-  "clickclickity24@gmail.com",
-];
+const adminEmailList = ["ghumankm@gmail.com", "clickclickity24@gmail.com"];
 
 const employerEmailList = [
   "kanwarmehtab.ghuman@franklinsabers.org",
   "heyanantraj@gmail.com",
+  "rohanpeddmallu@gmail.com",
 ];
 
 const studentsEmailList = [
@@ -53,6 +50,9 @@ export const {
   callbacks: {
     session({ session, user }) {
       session.user.role = user.role;
+      session.user.id = user.id;
+      session.user.image = user.image;
+      session.user.name = user.name;
       return session;
     },
   },
