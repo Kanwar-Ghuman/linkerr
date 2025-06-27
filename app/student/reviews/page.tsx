@@ -1,185 +1,309 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import { useState } from "react";
-import { Input } from "@/components/ui/input";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Loader2, Building2, MapPin } from "lucide-react";
+import {
+  Loader2,
+  Send,
+  Bot,
+  User,
+  Lightbulb,
+  GraduationCap,
+  Briefcase,
+  Heart,
+  Search,
+  MapPin,
+} from "lucide-react";
 
-interface Job {
+interface Message {
   id: string;
-  jobTitle: string;
-  companyName: string;
-  roleLocation: string;
-  remote: string;
-  pay: string;
-  skills: string[];
-  matchPercentage: number;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: string;
 }
 
-interface Suggestion {
-  title: string;
-  description: string;
-  improvement: string;
-}
+const SUGGESTED_QUESTIONS = [
+  {
+    icon: <Lightbulb className="w-4 h-4" />,
+    text: "I don't know what I want to do after high school. Can you help me explore my options?",
+    category: "Career Exploration",
+  },
+  {
+    icon: <GraduationCap className="w-4 h-4" />,
+    text: "Should I go to college, trade school, or take a gap year?",
+    category: "Education Path",
+  },
+  {
+    icon: <Briefcase className="w-4 h-4" />,
+    text: "How can I get work experience while I'm still in high school?",
+    category: "Experience Building",
+  },
+  {
+    icon: <Heart className="w-4 h-4" />,
+    text: "I'm really nervous about job interviews. Can you help me prepare?",
+    category: "Interview Prep",
+  },
+  {
+    icon: <Search className="w-4 h-4" />,
+    text: "What job opportunities are available on Linkerr right now?",
+    category: "Job Search",
+  },
+  {
+    icon: <MapPin className="w-4 h-4" />,
+    text: "Are there any remote jobs I could apply for as a high school student?",
+    category: "Remote Work",
+  },
+];
 
-interface ResumeAnalysis {
-  currentScore: number;
-  suggestions: {
-    content: Suggestion[];
-    format: Suggestion[];
-    skills: Suggestion[];
-  };
-  strongPoints: string[];
-  keywordsMissing: string[];
-}
-
-export default function ReviewsPage() {
-  const [url, setUrl] = useState("");
+export default function CareerCounselorPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [analysis, setAnalysis] = useState<ResumeAnalysis | null>(null);
   const [error, setError] = useState("");
+  const [jobsCount, setJobsCount] = useState<number | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+    }, 100);
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  useEffect(() => {
+    const welcomeMessage: Message = {
+      id: "welcome",
+      role: "assistant",
+      content:
+        "Hi there! 👋 I'm LinkerrAI, your friendly career counselor. I'm here to help you explore career options, make educational decisions, and build confidence for your future. I can also tell you about specific job opportunities available on our platform! What's on your mind today?",
+      timestamp: new Date().toISOString(),
+    };
+    setMessages([welcomeMessage]);
+  }, []);
+
+  const sendMessage = async (messageText: string) => {
+    if (!messageText.trim() || loading) return;
+
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: messageText,
+      timestamp: new Date().toISOString(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
     setLoading(true);
     setError("");
-    setAnalysis(null);
 
     try {
-      const response = await fetch("/api/ai/parse-resume", {
+      const conversationHistory = messages.map((msg) => ({
+        role: msg.role,
+        content: msg.content,
+      }));
+
+      const response = await fetch("/api/ai/career-counselor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ resumeUrl: url }),
+        body: JSON.stringify({
+          message: messageText,
+          conversationHistory,
+        }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to parse resume");
+        throw new Error(data.error || "Failed to get response");
       }
 
-      if (!data.analysis) {
-        throw new Error("Invalid response format");
-      }
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: data.response,
+        timestamp: data.timestamp,
+      };
 
-      setAnalysis(data.analysis);
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      // Update jobs count if provided
+      if (data.jobsCount !== undefined) {
+        setJobsCount(data.jobsCount);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to analyze resume");
-      console.error("Resume parsing error:", err);
+      setError(err instanceof Error ? err.message : "Failed to send message");
+      console.error("Chat error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    sendMessage(inputMessage);
+  };
+
+  const handleSuggestedQuestion = (question: string) => {
+    sendMessage(question);
+  };
+
   return (
-    <div className="container mx-auto py-8 px-4 max-w-5xl">
-      {/* Header */}
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          LinkerrAI Resume Analyzer
-        </h1>
-        <p className="text-gray-600">
-          Get personalized suggestions to improve your resume
-        </p>
-      </div>
-
-      {/* Upload Section */}
-      <form onSubmit={handleSubmit} className="mb-8">
-        <div className="flex gap-4">
-          <Input
-            type="url"
-            placeholder="Enter resume URL..."
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            className="flex-1"
-            required
-          />
-          <Button type="submit" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Analyze Resume
-          </Button>
-        </div>
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-      </form>
-
-      {/* Results Section */}
-      {loading ? (
-        <div className="text-center py-12">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Analyzing your resume...</p>
-        </div>
-      ) : analysis ? (
-        <div className="space-y-8">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-32 h-32 rounded-full bg-blue-100">
-              <span className="text-3xl font-bold text-blue-600">
-                {analysis.currentScore}%
-              </span>
+    <div className="min-h-screen bg-gray-50">
+      <div className="container mx-auto py-8 px-4 max-w-4xl">
+        {/* Header */}
+        <div className="mb-8 text-center">
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="p-3 bg-blue-100 rounded-full">
+              <Bot className="w-8 h-8 text-blue-600" />
             </div>
+            <h1 className="text-3xl font-bold text-gray-900">
+              LinkerrAI Career Counselor
+            </h1>
           </div>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Your personal AI career counselor to help you explore careers, make
+            educational decisions, and build confidence for your future. Ask me
+            anything about your career journey!
+          </p>
+          {jobsCount !== null && (
+            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full text-green-700 text-sm">
+              <Briefcase className="w-4 h-4" />
+              <span>{jobsCount} job opportunities available on Linkerr</span>
+            </div>
+          )}
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {Object.entries(analysis.suggestions).map(
-              ([category, suggestions]) => (
-                <Card key={category} className="p-6">
-                  <h3 className="text-lg font-semibold capitalize mb-4">
-                    {category}
-                  </h3>
-                  <div className="space-y-4">
-                    {suggestions.map((suggestion, index) => (
-                      <div key={index} className="space-y-2">
-                        <h4 className="font-medium text-blue-600">
-                          {suggestion.title}
-                        </h4>
-                        <p className="text-sm text-gray-600">
-                          {suggestion.description}
-                        </p>
-                        <p className="text-sm text-green-600">
-                          {suggestion.improvement}
-                        </p>
-                      </div>
-                    ))}
+        {/* Suggested Questions - Only show when conversation is minimal */}
+        {messages.length <= 1 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              Popular Questions
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {SUGGESTED_QUESTIONS.map((question, index) => (
+                <Card
+                  key={index}
+                  className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => handleSuggestedQuestion(question.text)}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="text-blue-600 mt-1">{question.icon}</div>
+                    <div>
+                      <p className="text-sm font-medium text-blue-600 mb-1">
+                        {question.category}
+                      </p>
+                      <p className="text-sm text-gray-700">{question.text}</p>
+                    </div>
                   </div>
                 </Card>
-              )
-            )}
+              ))}
+            </div>
           </div>
+        )}
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Strong Points</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.strongPoints.map((point, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-green-100 text-green-600 rounded-full text-sm"
+        {/* Chat Container */}
+        <Card className="bg-white shadow-sm">
+          <div className="flex flex-col" style={{ height: "500px" }}>
+            {/* Messages Container */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+              {messages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`flex gap-3 ${
+                    message.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
-                  {point}
-                </span>
+                  {message.role === "assistant" && (
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <Bot className="w-4 h-4 text-blue-600" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[75%] p-3 rounded-lg break-words ${
+                      message.role === "user"
+                        ? "bg-blue-600 text-white rounded-br-sm"
+                        : "bg-gray-100 text-gray-900 rounded-bl-sm"
+                    }`}
+                  >
+                    <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                      {message.content}
+                    </p>
+                    <p className="text-xs opacity-70 mt-2">
+                      {new Date(message.timestamp).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  </div>
+                  {message.role === "user" && (
+                    <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
+                  )}
+                </div>
               ))}
-            </div>
-          </Card>
 
-          <Card className="p-6">
-            <h3 className="text-lg font-semibold mb-4">Missing Keywords</h3>
-            <div className="flex flex-wrap gap-2">
-              {analysis.keywordsMissing.map((keyword, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm"
-                >
-                  {keyword}
-                </span>
-              ))}
+              {loading && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                    <Bot className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <div className="bg-gray-100 p-3 rounded-lg rounded-bl-sm">
+                    <div className="flex items-center gap-2">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span className="text-gray-600 text-sm">
+                        LinkerrAI is thinking...
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
             </div>
-          </Card>
+
+            {/* Input Form */}
+            <div className="border-t border-gray-200 p-4 bg-gray-50">
+              {error && (
+                <div className="mb-3 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+              <form onSubmit={handleSubmit} className="flex gap-3">
+                <Input
+                  value={inputMessage}
+                  onChange={(e) => setInputMessage(e.target.value)}
+                  placeholder="Ask me about careers, education, or available jobs..."
+                  className="flex-1 bg-white"
+                  disabled={loading}
+                  maxLength={500}
+                />
+                <Button
+                  type="submit"
+                  disabled={loading || !inputMessage.trim()}
+                  className="px-4"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </form>
+            </div>
+          </div>
+        </Card>
+
+        {/* Footer Info */}
+        <div className="mt-6 text-center">
+          <p className="text-sm text-gray-500">
+            💡 Tip: Ask me about specific jobs available on Linkerr, or get
+            advice on career planning and skill development!
+          </p>
         </div>
-      ) : error ? (
-        <div className="text-center py-8 text-red-600">{error}</div>
-      ) : null}
+      </div>
     </div>
   );
 }
