@@ -33,7 +33,7 @@ export async function GET() {
           userId: session.user.id,
           major: "",
           university: "",
-          gradYear: 0,
+          gradYear: 2025,
           resume: "",
         },
       });

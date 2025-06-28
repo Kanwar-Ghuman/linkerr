@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function POST(
   request: Request,
-  { params }: { params: { jobId: string } }
+  { params }: { params: Promise<{ jobId: string }> }
 ) {
   try {
     // Check authentication
@@ -35,9 +35,11 @@ export async function POST(
       );
     }
 
+    const { jobId } = await params;
+
     // Check if job exists and is approved
     const job = await prisma.job.findUnique({
-      where: { id: params.jobId },
+      where: { id: jobId },
     });
 
     if (!job) {
@@ -55,7 +57,7 @@ export async function POST(
     const existingApplication = await prisma.jobApplication.findUnique({
       where: {
         jobId_studentId: {
-          jobId: params.jobId,
+          jobId: jobId,
           studentId: student.id,
         },
       },
@@ -71,7 +73,7 @@ export async function POST(
     // Create application
     const application = await prisma.jobApplication.create({
       data: {
-        jobId: params.jobId,
+        jobId: jobId,
         studentId: student.id,
         status: "PENDING",
       },

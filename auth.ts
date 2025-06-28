@@ -101,7 +101,7 @@ export const {
               userId: user.id!,
               major: "",
               university: "",
-              gradYear: 0,
+              gradYear: 2025,
               resume: "",
             },
           });

@@ -8,21 +8,25 @@ import {
   ProfileTuple,
 } from "../../types/navbar";
 
+/**
+ * StudentNavbar Component
+ *
+ * Renders the navigation bar specifically for student users.
+ * Includes student-specific menu items and user profile functionality.
+ *
+ * @param user - User object containing profile information (name, email, image)
+ * @returns Configured BaseNavbar component for students
+ */
 export async function StudentNavbar({ user }: AdminNavbarProps) {
-  console.log("StudentNavbar - User data:", user);
-  console.log("StudentNavbar - User image:", user?.image);
-  console.log("StudentNavbar - User name:", user?.name);
-
+  // Define navigation menu items for high school students
   const menuItems: MenuItem[] = [
     { label: "Home", link: "/student/dashboard" },
     { label: "LinkerrAI", link: "/student/reviews" },
-    {
-      label: "Edit Profile",
-      link: "/student/profile",
-    },
+    { label: "Edit Profile", link: "/student/profile" },
   ];
 
-  const profile: ProfileItem[] = [
+  // Configure profile dropdown menu items
+  const profileMenuItems: ProfileItem[] = [
     {
       key: "profile",
       label: (
@@ -34,14 +38,18 @@ export async function StudentNavbar({ user }: AdminNavbarProps) {
       className: "h-20 gap-2",
       link: "/profile",
     },
-    { key: "logout", label: "Log Out", color: "danger" },
+    {
+      key: "logout",
+      label: "Log Out",
+      color: "danger",
+    },
   ];
 
+  // Combine user data with menu items for profile dropdown
   const profileData: ProfileTuple = [
     [user?.name || "", user?.image || ""],
-    profile,
+    profileMenuItems,
   ];
-  console.log("StudentNavbar - Profile data being passed:", profileData);
 
   return <BaseNavbar menuItems={menuItems} profileItems={profileData} />;
 }

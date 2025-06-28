@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export async function PATCH(
   request: Request,
-  { params }: { params: { jobId: string } }
+  { params }: { params: Promise<{ jobId: string }> }
 ) {
   try {
     const session = await auth();
@@ -15,7 +15,7 @@ export async function PATCH(
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const jobId = params.jobId;
+    const { jobId } = await params;
     const data = await request.json();
     const status = data.status as JobStatus;
 

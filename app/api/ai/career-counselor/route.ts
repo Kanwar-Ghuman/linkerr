@@ -18,6 +18,9 @@ Key Guidelines:
 - Acknowledge that it's normal to not know what you want to do yet
 - Provide practical, actionable advice for high schoolers
 - Be enthusiastic about different career paths and educational options
+- Format responses using PLAIN TEXT only - NO markdown, asterisks, or special formatting
+- Use simple numbered lists and clear line breaks for readability
+- Keep responses conversational and natural
 
 Core Areas of Expertise:
 1. Career Exploration: Help students discover careers based on interests, values, and strengths
@@ -26,7 +29,15 @@ Core Areas of Expertise:
 4. Interview Preparation: Coach through interview anxiety and first-job nerves
 5. Job Opportunities: Answer questions about specific jobs available on the platform
 
-IMPORTANT: You now have access to real job listings from the Linkerr platform. When students ask about jobs, internships, or specific opportunities, you can reference these actual positions. Always mention that these are real opportunities they can apply for on Linkerr.
+IMPORTANT FORMATTING RULES:
+- Never use asterisks (*) for bold text
+- Never use underscores (_) for emphasis
+- Never use markdown formatting
+- Use CAPS for emphasis sparingly
+- Use simple line breaks and numbered lists
+- Keep job listings clean and easy to read
+
+IMPORTANT: You now have access to real job listings from the Linkerr platform. When students ask about jobs, internships, or specific opportunities, you can reference these actual positions. Some jobs may be pending approval, but they represent real opportunities that will be available soon. Always mention that students can apply through the Linkerr platform.
 
 Always end responses with a follow-up question to keep the conversation going and show genuine interest in helping them.`;
 
@@ -47,10 +58,12 @@ export async function POST(request: Request) {
     }
 
     try {
-      // Fetch available jobs from database
+      // Fetch available jobs from database (including PENDING for now)
       const jobs = await prisma.job.findMany({
         where: {
-          status: "APPROVED",
+          status: {
+            in: ["APPROVED", "PENDING"],
+          },
         },
         select: {
           id: true,
@@ -62,15 +75,16 @@ export async function POST(request: Request) {
           remote: true,
           skills: true,
           pay: true,
+          status: true,
           createdAt: true,
         },
         orderBy: {
           createdAt: "desc",
         },
-        take: 20, // Limit to most recent 20 jobs to avoid token limits
+        take: 20,
       });
 
-      // Format jobs for AI context
+      // Format jobs for AI context with clean formatting
       const jobsContext =
         jobs.length > 0
           ? `
@@ -80,22 +94,23 @@ ${jobs
   .map(
     (job, index) => `
 ${index + 1}. ${job.jobTitle} at ${job.companyName}
-   - Location: ${job.roleLocation} (${job.remote})
-   - Type: ${job.jobType || "Not specified"}
-   - Salary: $${job.pay.toLocaleString()}
-   - Skills: ${job.skills.join(", ")}
-   - Description: ${job.jobDescription.substring(0, 200)}${
+   Location: ${job.roleLocation} (${job.remote})
+   Type: ${job.jobType || "Not specified"}
+   Salary: $${job.pay.toLocaleString()}/hour
+   Skills: ${job.skills.join(", ")}
+   Description: ${job.jobDescription.substring(0, 200)}${
       job.jobDescription.length > 200 ? "..." : ""
     }
-   - Posted: ${new Date(job.createdAt).toLocaleDateString()}
+   Posted: ${new Date(job.createdAt).toLocaleDateString()}
+   Status: ${job.status === "PENDING" ? "Pending approval" : "Ready to apply"}
 `
   )
   .join("")}
 
-When referencing these jobs, remind students they can apply directly through the Linkerr platform. You can help them understand if they're qualified, what skills they might need to develop, or how these roles could fit into their career path.`
+When referencing these jobs, use clean formatting without asterisks or markdown. List job details clearly using simple text and line breaks. Always remind students they can apply through the Linkerr platform.`
           : `
 
-Currently, there are no approved job listings available on the platform, but I can still help with career exploration, education planning, and skill development!`;
+Currently, there are no job listings available on the platform, but I can still help with career exploration, education planning, and skill development!`;
 
       const messages = [
         {

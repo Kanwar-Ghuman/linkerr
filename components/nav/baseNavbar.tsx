@@ -15,25 +15,113 @@ import {
 } from "@heroui/react";
 import { usePathname } from "next/navigation";
 import React from "react";
-import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
 import Image from "next/image";
+
+import { BaseNavbarProps, ProfileTuple } from "../../types/navbar";
 import { signOut } from "../home/signout";
 
+/**
+ * BaseNavbar Component
+ *
+ * A responsive navigation bar component that supports:
+ * - Logo display with optional linking
+ * - Menu items with active state indication
+ * - User profile dropdown with avatar
+ * - Mobile hamburger menu
+ *
+ * @param logoLink - Optional URL for logo link
+ * @param menuItems - Array of navigation menu items
+ * @param profileItems - User profile data and dropdown menu items
+ */
 export function BaseNavbar({
   logoLink,
   menuItems,
   profileItems,
 }: BaseNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const routerUrl = usePathname();
+  const currentPath = usePathname();
 
-  // Debug the profile items
-  if (Array.isArray(profileItems) && profileItems.length === 2) {
-    console.log("BaseNavbar - Profile name:", profileItems[0][0]);
-    console.log("BaseNavbar - Profile image URL:", profileItems[0][1]);
-    console.log("BaseNavbar - Image URL type:", typeof profileItems[0][1]);
-    console.log("BaseNavbar - Image URL length:", profileItems[0][1]?.length);
-  }
+  /**
+   * Renders the user profile avatar with fallback support
+   * Attempts to display Google profile image, falls back to initials
+   */
+  const renderProfileAvatar = () => {
+    if (!Array.isArray(profileItems) || profileItems.length !== 2) {
+      return <div>{profileItems}</div>;
+    }
+
+    const [userName, userImage] = profileItems[0];
+    const userInitial = userName ? userName.charAt(0).toUpperCase() : "U";
+
+    return (
+      <Dropdown placement="bottom-end">
+        <DropdownTrigger>
+          <div className="flex items-center">
+            {userImage ? (
+              // Profile image container with fallback
+              <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
+                <Image
+                  src={userImage}
+                  alt={userName || "Profile"}
+                  fill
+                  className="object-cover"
+                  onError={(e) => {
+                    // Hide failed images gracefully
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
+                />
+                {/* Fallback initials behind image */}
+                <div className="absolute inset-0 bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
+                  {userInitial}
+                </div>
+              </div>
+            ) : (
+              // Initials-only avatar when no image provided
+              <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
+                {userInitial}
+              </div>
+            )}
+          </div>
+        </DropdownTrigger>
+
+        {/* Profile dropdown menu */}
+        <DropdownMenu
+          aria-label="User menu"
+          items={(profileItems as ProfileTuple)[1]}
+          className="bg-white"
+        >
+          {(item) => (
+            <DropdownItem
+              key={item.key}
+              color={item.color}
+              className={item.className}
+              onPress={item.key === "logout" ? () => signOut() : undefined}
+            >
+              {item.label}
+            </DropdownItem>
+          )}
+        </DropdownMenu>
+      </Dropdown>
+    );
+  };
+
+  /**
+   * Renders the main logo with optional linking
+   */
+  const renderLogo = () => {
+    const logoElement = (
+      <Image
+        src="/linkerr.png"
+        alt="Linkerr Logo"
+        width={120}
+        height={40}
+        className="mr-6"
+        priority
+      />
+    );
+
+    return logoLink ? <Link href={logoLink}>{logoElement}</Link> : logoElement;
+  };
 
   return (
     <Navbar
@@ -41,6 +129,7 @@ export function BaseNavbar({
       maxWidth="full"
       className="bg-gradient-to-br from-blue-100 to-white p-5"
       classNames={{
+        // Active menu item styling
         item: [
           "flex",
           "relative",
@@ -57,41 +146,26 @@ export function BaseNavbar({
         ],
       }}
     >
+      {/* Left side: Mobile menu toggle + Logo + Desktop menu */}
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-        {logoLink ? (
-          <Link href={logoLink}>
-            <Image
-              src="/linkerr.png"
-              alt="Linkerr Logo"
-              width={120}
-              height={40}
-              className="mr-6"
-            />
-          </Link>
-        ) : (
-          <Image
-            src="/linkerr.png"
-            alt="Linkerr Logo"
-            width={120}
-            height={40}
-            className="mr-6"
-          />
-        )}
 
+        {renderLogo()}
+
+        {/* Desktop navigation menu */}
         <NavbarContent className="hidden sm:flex gap-6" justify="center">
           {menuItems?.map((item, index) => (
             <NavbarItem
               key={`${item.label}-${index}`}
-              isActive={routerUrl === item.link}
+              isActive={currentPath === item.link}
             >
               <Link
                 href={item.link}
-                aria-current={routerUrl === item.link ? "page" : undefined}
-                color={routerUrl === item.link ? "primary" : "foreground"}
+                aria-current={currentPath === item.link ? "page" : undefined}
+                color={currentPath === item.link ? "primary" : "foreground"}
                 className="text-gray-700 hover:text-gray-900 justify-end"
               >
                 {item.label}
@@ -100,81 +174,22 @@ export function BaseNavbar({
           ))}
         </NavbarContent>
       </NavbarContent>
-      <NavbarContent justify="end">
-        {Array.isArray(profileItems) && profileItems.length === 2 ? (
-          <Dropdown placement="bottom-end">
-            <DropdownTrigger>
-              <div className="flex items-center">
-                {profileItems[0][1] ? (
-                  <div className="relative w-8 h-8 rounded-full overflow-hidden border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
-                    <Image
-                      src={profileItems[0][1]}
-                      alt={profileItems[0][0] || "Profile"}
-                      fill
-                      className="object-cover"
-                      onError={(e) => {
-                        console.error(
-                          "Profile image failed to load:",
-                          profileItems[0][1]
-                        );
-                        // Hide the image on error
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
-                    {/* Fallback avatar with initials */}
-                    <div className="absolute inset-0 bg-blue-500 flex items-center justify-center text-white text-sm font-semibold">
-                      {profileItems[0][0]
-                        ? profileItems[0][0].charAt(0).toUpperCase()
-                        : "U"}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm font-semibold border-2 border-gray-300 cursor-pointer hover:border-blue-500 transition-colors">
-                    {profileItems[0][0]
-                      ? profileItems[0][0].charAt(0).toUpperCase()
-                      : "U"}
-                  </div>
-                )}
-              </div>
-            </DropdownTrigger>
-            <DropdownMenu
-              aria-label="Dynamic Actions"
-              items={(profileItems as ProfileTuple)[1]}
-              className="bg-white"
-            >
-              {(item) => (
-                <DropdownItem
-                  key={item.key}
-                  color={item.color}
-                  className={item.className}
-                  onPress={
-                    item.key === "logout"
-                      ? () => {
-                          signOut();
-                        }
-                      : undefined
-                  }
-                >
-                  {item.label}
-                </DropdownItem>
-              )}
-            </DropdownMenu>
-          </Dropdown>
-        ) : (
-          <div>{profileItems}</div>
-        )}
-      </NavbarContent>
+
+      {/* Right side: User profile */}
+      <NavbarContent justify="end">{renderProfileAvatar()}</NavbarContent>
+
+      {/* Mobile navigation menu */}
       <NavbarMenu>
         {menuItems?.map((item, index) => (
           <NavbarMenuItem
             key={`${item.label}-${index}`}
-            isActive={routerUrl === item.link}
+            isActive={currentPath === item.link}
           >
             <Link
               className="w-full"
               href={item.link}
               size="lg"
-              color={routerUrl === item.link ? "primary" : "foreground"}
+              color={currentPath === item.link ? "primary" : "foreground"}
             >
               {item.label}
             </Link>

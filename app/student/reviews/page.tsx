@@ -10,11 +10,9 @@ import {
   Bot,
   User,
   Lightbulb,
-  GraduationCap,
   Briefcase,
   Heart,
   Search,
-  MapPin,
 } from "lucide-react";
 
 interface Message {
@@ -31,12 +29,8 @@ const SUGGESTED_QUESTIONS = [
     category: "Career Exploration",
   },
   {
-    icon: <GraduationCap className="w-4 h-4" />,
-    text: "Should I go to college, trade school, or take a gap year?",
-    category: "Education Path",
-  },
-  {
     icon: <Briefcase className="w-4 h-4" />,
+
     text: "How can I get work experience while I'm still in high school?",
     category: "Experience Building",
   },
@@ -49,11 +43,6 @@ const SUGGESTED_QUESTIONS = [
     icon: <Search className="w-4 h-4" />,
     text: "What job opportunities are available on Linkerr right now?",
     category: "Job Search",
-  },
-  {
-    icon: <MapPin className="w-4 h-4" />,
-    text: "Are there any remote jobs I could apply for as a high school student?",
-    category: "Remote Work",
   },
 ];
 
